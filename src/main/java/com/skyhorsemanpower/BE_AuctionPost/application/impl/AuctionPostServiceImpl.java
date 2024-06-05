@@ -41,11 +41,11 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         createAuctionPostDto.setAuctionUuid(auctionUuid);
 
         // PostgreSQL 저장
-        createCommandOnlyAution(createAuctionPostDto);
+        createCommandAutionPost(createAuctionPostDto);
         createAuctionImages(createAuctionPostDto);
 
         // MongoDB 저장
-        createReadOnlyAuction(createAuctionPostDto);
+        createReadAuctionPost(createAuctionPostDto);
 
         // 스케줄러에 경매 마감 등록
         createScheduler(auctionUuid);
@@ -55,12 +55,12 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         try {
             quartzConfig.schedulerEndAuctionJob(auctionUuid);
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            log.info("Scheduler exception for auction UUID: {}", auctionUuid, e);
             throw new CustomException(ResponseStatus.SCHEDULER_ERROR);
         }
     }
 
-    private void createReadOnlyAuction(CreateAuctionPostDto createAuctionPostDto) {
+    private void createReadAuctionPost(CreateAuctionPostDto createAuctionPostDto) {
         try {
             readAuctionPostRepository.save(
                     ReadAuctionPost.builder()
@@ -76,7 +76,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                             .build()
             );
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("Create Read AuctionPost Error", e);
             throw new CustomException(ResponseStatus.MONGODB_ERROR);
         }
     }
@@ -105,12 +105,12 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                 );
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("Create Auction Image Error", e);
             throw new CustomException(ResponseStatus.POSTGRESQL_ERROR);
         }
     }
 
-    private void createCommandOnlyAution(CreateAuctionPostDto createAuctionPostDto) {
+    private void createCommandAutionPost(CreateAuctionPostDto createAuctionPostDto) {
         try {
             commandAuctionPostRepository.save(CommandAuctionPost.builder()
                     .auctionUuid(createAuctionPostDto.getAuctionUuid())
@@ -122,7 +122,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                     .state(AuctionStateEnum.AUCTION_IS_IN_PROGRESS)
                     .build());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("Create Command AuctionPost Error", e);
             throw new CustomException(ResponseStatus.POSTGRESQL_ERROR);
         }
     }
