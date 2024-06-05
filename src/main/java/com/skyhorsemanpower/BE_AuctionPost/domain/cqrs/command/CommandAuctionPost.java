@@ -35,7 +35,7 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
     private String category;
 
     @Column(nullable = false, length = 10)
-    private BigDecimal minimumBiddingPrice;
+    private BigDecimal minimumPrice;
 
     @Column(length = 40)
     private String bidderUuid;
@@ -50,7 +50,7 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
 
     @Builder
     public CommandAuctionPost(long auctionPostId, String auctionUuid, String sellerUuid, String title,
-                              String content, String category, BigDecimal minimumBiddingPrice, String bidderUuid,
+                              String content, String category, BigDecimal minimumPrice, String bidderUuid,
                               BigDecimal bidPrice, AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
@@ -58,7 +58,7 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
         this.title = title;
         this.content = content;
         this.category = category;
-        this.minimumBiddingPrice = minimumBiddingPrice;
+        this.minimumPrice = minimumPrice;
         this.bidderUuid = bidderUuid;
         this.bidPrice = bidPrice;
         this.state = state;

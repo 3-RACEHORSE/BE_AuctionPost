@@ -25,7 +25,7 @@ public class ReadAuctionPost {
     private String title;
     private String content;
     private String category;
-    private BigDecimal minimumBiddingPrice;
+    private BigDecimal minimumPrice;
     private LocalDateTime createdAt;
     private LocalDateTime endedAt;
     private String bidderUuid;
@@ -35,7 +35,7 @@ public class ReadAuctionPost {
 
     @Builder
     public ReadAuctionPost(String auctionPostId, String auctionUuid, String sellerUuid, String title,
-                           String content, String category, BigDecimal minimumBiddingPrice, LocalDateTime createdAt,
+                           String content, String category, BigDecimal minimumPrice, LocalDateTime createdAt,
                            LocalDateTime endedAt, String bidderUuid, BigDecimal bidPrice, AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
@@ -43,7 +43,7 @@ public class ReadAuctionPost {
         this.title = title;
         this.content = content;
         this.category = category;
-        this.minimumBiddingPrice = minimumBiddingPrice;
+        this.minimumPrice = minimumPrice;
         this.createdAt = createdAt;
         this.endedAt = endedAt;
         this.bidderUuid = bidderUuid;
@@ -51,7 +51,7 @@ public class ReadAuctionPost {
         this.state = state;
     }
 
-    public void setMinimumBiddingPrice(BigDecimal maxBiddingPrice) {
-        this.minimumBiddingPrice = maxBiddingPrice;
+    public void setMinimumPrice(BigDecimal maxPrice) {
+        this.minimumPrice = maxPrice;
     }
 }

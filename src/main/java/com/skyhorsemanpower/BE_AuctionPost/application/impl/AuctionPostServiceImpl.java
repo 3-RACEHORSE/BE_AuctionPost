@@ -69,7 +69,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                             .title(createAuctionPostDto.getTitle())
                             .content(createAuctionPostDto.getContent())
                             .category(createAuctionPostDto.getCategory())
-                            .minimumBiddingPrice(createAuctionPostDto.getMinimumBiddingPrice())
+                            .minimumPrice(createAuctionPostDto.getMinimumPrice())
                             .createdAt(LocalDateTime.now())
                             .endedAt(LocalDateTime.now().plusDays(1))
                             .state(AuctionStateEnum.AUCTION_IS_IN_PROGRESS)
@@ -118,7 +118,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                     .title(createAuctionPostDto.getTitle())
                     .content(createAuctionPostDto.getContent())
                     .category(createAuctionPostDto.getCategory())
-                    .minimumBiddingPrice(createAuctionPostDto.getMinimumBiddingPrice())
+                    .minimumPrice(createAuctionPostDto.getMinimumPrice())
                     .state(AuctionStateEnum.AUCTION_IS_IN_PROGRESS)
                     .build());
         } catch (Exception e) {

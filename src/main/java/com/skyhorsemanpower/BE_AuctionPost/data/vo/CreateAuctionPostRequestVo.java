@@ -12,7 +12,7 @@ public class CreateAuctionPostRequestVo {
     private String title;
     private String content;
     private String category;
-    private BigDecimal minimumBiddingPrice;
+    private BigDecimal minimumPrice;
     private String thumbnail;
     private List<String> images;
 }

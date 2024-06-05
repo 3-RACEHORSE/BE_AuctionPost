@@ -17,19 +17,19 @@ public class CreateAuctionPostDto {
     private String title;
     private String content;
     private String category;
-    private BigDecimal minimumBiddingPrice;
+    private BigDecimal minimumPrice;
     private String thumbnail;
     private List<String> images;
     private String auctionUuid;
 
     @Builder
     public CreateAuctionPostDto(String sellerUuid, String title, String content, String category,
-                                BigDecimal minimumBiddingPrice, String thumbnail, List<String> images) {
+                                BigDecimal minimumPrice, String thumbnail, List<String> images) {
         this.sellerUuid = sellerUuid;
         this.title = title;
         this.content = content;
         this.category = category;
-        this.minimumBiddingPrice = minimumBiddingPrice;
+        this.minimumPrice = minimumPrice;
         this.thumbnail = thumbnail;
         this.images = images;
     }
@@ -40,7 +40,7 @@ public class CreateAuctionPostDto {
                 .title(createAuctionPostRequestVo.getTitle())
                 .content(createAuctionPostRequestVo.getContent())
                 .category(createAuctionPostRequestVo.getCategory())
-                .minimumBiddingPrice(createAuctionPostRequestVo.getMinimumBiddingPrice())
+                .minimumPrice(createAuctionPostRequestVo.getMinimumPrice())
                 .thumbnail(createAuctionPostRequestVo.getThumbnail())
                 .images(createAuctionPostRequestVo.getImages())
                 .build();
