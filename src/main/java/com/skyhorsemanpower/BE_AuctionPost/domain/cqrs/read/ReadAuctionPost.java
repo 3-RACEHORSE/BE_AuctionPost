@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -24,16 +25,18 @@ public class ReadAuctionPost {
     private String title;
     private String content;
     private String category;
-    private int minimumBiddingPrice;
+    private BigDecimal minimumBiddingPrice;
     private LocalDateTime createdAt;
     private LocalDateTime endedAt;
     private String bidderUuid;
-    private int bidPrice;
+    private BigDecimal bidPrice;
     private AuctionStateEnum state;
 
 
     @Builder
-    public ReadAuctionPost(String auctionPostId, String auctionUuid, String sellerUuid, String title, String content, String category, int minimumBiddingPrice, LocalDateTime createdAt, LocalDateTime endedAt, String bidderUuid, int bidPrice, AuctionStateEnum state) {
+    public ReadAuctionPost(String auctionPostId, String auctionUuid, String sellerUuid, String title,
+                           String content, String category, BigDecimal minimumBiddingPrice, LocalDateTime createdAt,
+                           LocalDateTime endedAt, String bidderUuid, BigDecimal bidPrice, AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
         this.sellerUuid = sellerUuid;
@@ -48,7 +51,7 @@ public class ReadAuctionPost {
         this.state = state;
     }
 
-    public void setMinimumBiddingPrice(int maxBiddingPrice) {
+    public void setMinimumBiddingPrice(BigDecimal maxBiddingPrice) {
         this.minimumBiddingPrice = maxBiddingPrice;
     }
 }

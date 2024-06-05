@@ -5,6 +5,8 @@ import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -17,27 +19,29 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long auctionPostId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String auctionUuid;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 40)
     private String sellerUuid;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String content;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String category;
 
-    @Column(nullable = false)
-    private int minimumBiddingPrice;
+    @Column(nullable = false, length = 10)
+    private BigDecimal minimumBiddingPrice;
 
+    @Column(length = 40)
     private String bidderUuid;
 
-    private int bidPrice;
+    @Column(length = 10)
+    private BigDecimal bidPrice;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -45,7 +49,9 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
 
 
     @Builder
-    public CommandAuctionPost(long auctionPostId, String auctionUuid, String sellerUuid, String title, String content, String category, int minimumBiddingPrice, String bidderUuid, int bidPrice, AuctionStateEnum state) {
+    public CommandAuctionPost(long auctionPostId, String auctionUuid, String sellerUuid, String title,
+                              String content, String category, BigDecimal minimumBiddingPrice, String bidderUuid,
+                              BigDecimal bidPrice, AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
         this.sellerUuid = sellerUuid;

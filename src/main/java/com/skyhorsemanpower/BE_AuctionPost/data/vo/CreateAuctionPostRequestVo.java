@@ -3,6 +3,7 @@ package com.skyhorsemanpower.BE_AuctionPost.data.vo;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -11,7 +12,7 @@ public class CreateAuctionPostRequestVo {
     private String title;
     private String content;
     private String category;
-    private int minimumBiddingPrice;
+    private BigDecimal minimumBiddingPrice;
     private String thumbnail;
     private List<String> images;
 }

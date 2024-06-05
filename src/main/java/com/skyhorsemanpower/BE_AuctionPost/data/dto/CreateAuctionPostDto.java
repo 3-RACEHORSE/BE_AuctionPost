@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -16,13 +17,14 @@ public class CreateAuctionPostDto {
     private String title;
     private String content;
     private String category;
-    private int minimumBiddingPrice;
+    private BigDecimal minimumBiddingPrice;
     private String thumbnail;
     private List<String> images;
     private String auctionUuid;
 
     @Builder
-    public CreateAuctionPostDto(String sellerUuid, String title, String content, String category, int minimumBiddingPrice, String thumbnail, List<String> images) {
+    public CreateAuctionPostDto(String sellerUuid, String title, String content, String category,
+                                BigDecimal minimumBiddingPrice, String thumbnail, List<String> images) {
         this.sellerUuid = sellerUuid;
         this.title = title;
         this.content = content;
