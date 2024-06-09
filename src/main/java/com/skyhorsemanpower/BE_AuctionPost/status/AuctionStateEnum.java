@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum AuctionStateEnum {
+    // 경매 진행 전
+    BEFORE_AUCTION,
     // 경매 진행 중
     AUCTION_IS_IN_PROGRESS,
     // 경매 정상 마감

@@ -7,40 +7,61 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class CreateAuctionPostDto {
-    private String sellerUuid;
+    private String adminUuid;
+    private String influencerUuid;
     private String title;
     private String content;
-    private String category;
-    private BigDecimal minimumPrice;
+    private String eventPlace;
+    private LocalDateTime eventStartTime;
+    private LocalDateTime eventCloseTime;
+    private LocalDateTime auctionStartTime;
+    private BigDecimal startPrice;
+    private BigDecimal incrementUnit;
     private String thumbnail;
     private List<String> images;
     private String auctionUuid;
 
     @Builder
-    public CreateAuctionPostDto(String sellerUuid, String title, String content, String category,
-                                BigDecimal minimumPrice, String thumbnail, List<String> images) {
-        this.sellerUuid = sellerUuid;
+    public CreateAuctionPostDto(String adminUuid, String influencerUuid, String title, String content,
+                                String eventPlace, LocalDateTime eventStartTime, LocalDateTime eventCloseTime,
+                                LocalDateTime auctionStartTime, BigDecimal startPrice, BigDecimal incrementUnit,
+                                String thumbnail, List<String> images, String auctionUuid) {
+        this.adminUuid = adminUuid;
+        this.influencerUuid = influencerUuid;
         this.title = title;
         this.content = content;
-        this.category = category;
-        this.minimumPrice = minimumPrice;
+        this.eventPlace = eventPlace;
+        this.eventStartTime = eventStartTime;
+        this.eventCloseTime = eventCloseTime;
+        this.auctionStartTime = auctionStartTime;
+        this.startPrice = startPrice;
+        this.incrementUnit = incrementUnit;
         this.thumbnail = thumbnail;
         this.images = images;
+        this.auctionUuid = auctionUuid;
     }
+
+
 
     public static CreateAuctionPostDto voToDto(String uuid, CreateAuctionPostRequestVo createAuctionPostRequestVo) {
         return CreateAuctionPostDto.builder()
-                .sellerUuid(uuid)
+                .adminUuid(uuid)
+                .influencerUuid(createAuctionPostRequestVo.getInfluencerUuid())
                 .title(createAuctionPostRequestVo.getTitle())
                 .content(createAuctionPostRequestVo.getContent())
-                .category(createAuctionPostRequestVo.getCategory())
-                .minimumPrice(createAuctionPostRequestVo.getMinimumPrice())
+                .eventPlace(createAuctionPostRequestVo.getEventPlace())
+                .eventStartTime(createAuctionPostRequestVo.getEventStartTime())
+                .eventCloseTime(createAuctionPostRequestVo.getEventCloseTime())
+                .auctionStartTime(createAuctionPostRequestVo.getAuctionStartTime())
+                .startPrice(createAuctionPostRequestVo.getStartPrice())
+                .incrementUnit(createAuctionPostRequestVo.getIncrementUnit())
                 .thumbnail(createAuctionPostRequestVo.getThumbnail())
                 .images(createAuctionPostRequestVo.getImages())
                 .build();

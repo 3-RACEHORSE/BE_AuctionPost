@@ -6,6 +6,8 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -17,13 +19,10 @@ import java.time.LocalDateTime;
 public class BaseCreateAndEndTimeEntity {
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
-    private LocalDateTime endedAt;
-
-    public BaseCreateAndEndTimeEntity() {
-        this.createdAt = LocalDateTime.now(); // 현재 시간으로 설정
-        this.endedAt = this.createdAt.plusDays(1);
-    }
+    @LastModifiedDate
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 }

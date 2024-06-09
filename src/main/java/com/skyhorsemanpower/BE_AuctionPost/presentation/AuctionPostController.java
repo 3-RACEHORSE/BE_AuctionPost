@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "인가가 필요한 경매 서비스", description = "인가가 필요한 경매 서비스 API")
-@RequestMapping("/api/v1/authorization/auction-post")
-public class AuthorizationAuctionController {
+@Tag(name = "경매글 서비스", description = "경매글 서비스 API")
+@RequestMapping("/api/v1/auction-post")
+public class AuctionPostController {
     private final AuctionPostService auctionPostService;
 
-    // 경매 등록
+    // 경매글 등록
     @PostMapping("")
-    @Operation(summary = "경매 등록", description = "경매 등록")
+    @Operation(summary = "경매글 등록", description = "경매글 등록")
     public SuccessResponse<Object> createAuctionPost (
             @RequestHeader String uuid,
             @RequestBody CreateAuctionPostRequestVo createAuctionPostRequestVo) {

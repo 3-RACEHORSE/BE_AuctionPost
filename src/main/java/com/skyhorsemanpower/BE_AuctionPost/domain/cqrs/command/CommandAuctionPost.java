@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -22,8 +23,11 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
     @Column(nullable = false, length = 30)
     private String auctionUuid;
 
-    @Column(nullable = false, length = 40)
-    private String sellerUuid;
+    @Column(nullable = false, length = 30)
+    private String adminUuid;
+
+    @Column(nullable = false, length = 30)
+    private String influencerUuid;
 
     @Column(nullable = false, length = 50)
     private String title;
@@ -31,17 +35,23 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
     @Column(nullable = false, length = 1000)
     private String content;
 
+    @Column(nullable = false, length = 40)
+    private String eventPlace;
+
     @Column(nullable = false, length = 30)
-    private String category;
+    private LocalDateTime eventStartTime;
+
+    @Column(nullable = false, length = 30)
+    private LocalDateTime eventCloseTime;
+
+    @Column(nullable = false, length = 30)
+    private LocalDateTime auctionStartTime;
 
     @Column(nullable = false, length = 10)
-    private BigDecimal minimumPrice;
+    private BigDecimal startPrice;
 
-    @Column(length = 40)
-    private String bidderUuid;
-
-    @Column(length = 10)
-    private BigDecimal bidPrice;
+    @Column(nullable = false, length = 10)
+    private BigDecimal incrementUnit;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -49,18 +59,22 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
 
 
     @Builder
-    public CommandAuctionPost(long auctionPostId, String auctionUuid, String sellerUuid, String title,
-                              String content, String category, BigDecimal minimumPrice, String bidderUuid,
-                              BigDecimal bidPrice, AuctionStateEnum state) {
+    public CommandAuctionPost(long auctionPostId, String auctionUuid, String adminUuid, String influencerUuid,
+                              String title, String content, String eventPlace, LocalDateTime eventStartTime,
+                              LocalDateTime eventCloseTime, LocalDateTime auctionStartTime, BigDecimal startPrice,
+                              BigDecimal incrementUnit, AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
-        this.sellerUuid = sellerUuid;
+        this.adminUuid = adminUuid;
+        this.influencerUuid = influencerUuid;
         this.title = title;
         this.content = content;
-        this.category = category;
-        this.minimumPrice = minimumPrice;
-        this.bidderUuid = bidderUuid;
-        this.bidPrice = bidPrice;
+        this.eventPlace = eventPlace;
+        this.eventStartTime = eventStartTime;
+        this.eventCloseTime = eventCloseTime;
+        this.auctionStartTime = auctionStartTime;
+        this.startPrice = startPrice;
+        this.incrementUnit = incrementUnit;
         this.state = state;
     }
 }
