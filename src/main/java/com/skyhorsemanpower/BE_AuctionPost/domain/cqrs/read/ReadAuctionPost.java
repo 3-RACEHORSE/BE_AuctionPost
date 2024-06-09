@@ -1,6 +1,9 @@
 package com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read;
 
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,37 +24,39 @@ public class ReadAuctionPost {
     private String auctionPostId;
 
     private String auctionUuid;
-    private String sellerUuid;
+    private String adminUuid;
+    private String influencerUuid;
     private String title;
     private String content;
-    private String category;
-    private BigDecimal minimumPrice;
-    private LocalDateTime createdAt;
-    private LocalDateTime endedAt;
-    private String bidderUuid;
-    private BigDecimal bidPrice;
+    private String eventPlace;
+    private LocalDateTime eventStartTime;
+    private LocalDateTime eventCloseTime;
+    private LocalDateTime auctionStartTime;
+    private BigDecimal startPrice;
+    private BigDecimal incrementUnit;
     private AuctionStateEnum state;
-
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @Builder
-    public ReadAuctionPost(String auctionPostId, String auctionUuid, String sellerUuid, String title,
-                           String content, String category, BigDecimal minimumPrice, LocalDateTime createdAt,
-                           LocalDateTime endedAt, String bidderUuid, BigDecimal bidPrice, AuctionStateEnum state) {
+    public ReadAuctionPost(String auctionPostId, String auctionUuid, String adminUuid, String influencerUuid,
+                           String title, String content, String eventPlace, LocalDateTime eventStartTime,
+                           LocalDateTime eventCloseTime, LocalDateTime auctionStartTime, BigDecimal startPrice,
+                           BigDecimal incrementUnit, AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
-        this.sellerUuid = sellerUuid;
+        this.adminUuid = adminUuid;
+        this.influencerUuid = influencerUuid;
         this.title = title;
         this.content = content;
-        this.category = category;
-        this.minimumPrice = minimumPrice;
-        this.createdAt = createdAt;
-        this.endedAt = endedAt;
-        this.bidderUuid = bidderUuid;
-        this.bidPrice = bidPrice;
+        this.eventPlace = eventPlace;
+        this.eventStartTime = eventStartTime;
+        this.eventCloseTime = eventCloseTime;
+        this.auctionStartTime = auctionStartTime;
+        this.startPrice = startPrice;
+        this.incrementUnit = incrementUnit;
         this.state = state;
-    }
-
-    public void setMinimumPrice(BigDecimal maxPrice) {
-        this.minimumPrice = maxPrice;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 }

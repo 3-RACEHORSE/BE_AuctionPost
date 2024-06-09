@@ -65,14 +65,17 @@ public class AuctionPostServiceImpl implements AuctionPostService {
             readAuctionPostRepository.save(
                     ReadAuctionPost.builder()
                             .auctionUuid(createAuctionPostDto.getAuctionUuid())
-                            .sellerUuid(createAuctionPostDto.getSellerUuid())
+                            .adminUuid(createAuctionPostDto.getAdminUuid())
+                            .influencerUuid(createAuctionPostDto.getInfluencerUuid())
                             .title(createAuctionPostDto.getTitle())
                             .content(createAuctionPostDto.getContent())
-                            .category(createAuctionPostDto.getCategory())
-                            .minimumPrice(createAuctionPostDto.getMinimumPrice())
-                            .createdAt(LocalDateTime.now())
-                            .endedAt(LocalDateTime.now().plusDays(1))
-                            .state(AuctionStateEnum.AUCTION_IS_IN_PROGRESS)
+                            .eventPlace(createAuctionPostDto.getEventPlace())
+                            .eventStartTime(createAuctionPostDto.getEventStartTime())
+                            .eventCloseTime(createAuctionPostDto.getEventCloseTime())
+                            .auctionStartTime(createAuctionPostDto.getAuctionStartTime())
+                            .startPrice(createAuctionPostDto.getStartPrice())
+                            .incrementUnit(createAuctionPostDto.getIncrementUnit())
+                            .state(AuctionStateEnum.BEFORE_AUCTION)
                             .build()
             );
         } catch (Exception e) {
@@ -114,12 +117,17 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         try {
             commandAuctionPostRepository.save(CommandAuctionPost.builder()
                     .auctionUuid(createAuctionPostDto.getAuctionUuid())
-                    .sellerUuid(createAuctionPostDto.getSellerUuid())
+                    .adminUuid(createAuctionPostDto.getAdminUuid())
+                    .influencerUuid(createAuctionPostDto.getInfluencerUuid())
                     .title(createAuctionPostDto.getTitle())
                     .content(createAuctionPostDto.getContent())
-                    .category(createAuctionPostDto.getCategory())
-                    .minimumPrice(createAuctionPostDto.getMinimumPrice())
-                    .state(AuctionStateEnum.AUCTION_IS_IN_PROGRESS)
+                    .eventPlace(createAuctionPostDto.getEventPlace())
+                    .eventStartTime(createAuctionPostDto.getEventStartTime())
+                    .eventCloseTime(createAuctionPostDto.getEventCloseTime())
+                    .auctionStartTime(createAuctionPostDto.getAuctionStartTime())
+                    .startPrice(createAuctionPostDto.getStartPrice())
+                    .incrementUnit(createAuctionPostDto.getIncrementUnit())
+                    .state(AuctionStateEnum.BEFORE_AUCTION)
                     .build());
         } catch (Exception e) {
             log.info("Create Command AuctionPost Error", e);
