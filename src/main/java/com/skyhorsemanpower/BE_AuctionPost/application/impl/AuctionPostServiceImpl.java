@@ -3,7 +3,10 @@ package com.skyhorsemanpower.BE_AuctionPost.application.impl;
 import com.skyhorsemanpower.BE_AuctionPost.application.AuctionPostService;
 import com.skyhorsemanpower.BE_AuctionPost.common.CustomException;
 import com.skyhorsemanpower.BE_AuctionPost.config.QuartzConfig;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.AuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.CreateAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.domain.AuctionImages;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.command.CommandAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read.ReadAuctionPost;
@@ -11,16 +14,20 @@ import com.skyhorsemanpower.BE_AuctionPost.repository.AuctionImagesRepository;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.CommandAuctionPostRepository;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.read.ReadAuctionPostRepository;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
+import com.skyhorsemanpower.BE_AuctionPost.status.PageState;
 import com.skyhorsemanpower.BE_AuctionPost.status.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,6 +56,65 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 
         // 스케줄러에 경매 마감 등록
         createScheduler(auctionUuid);
+    }
+
+    @Override
+    @Transactional
+    public SearchAllAuctionResponseVo searchAllAuction(SearchAllAuctionDto searchAllAuctionDto) {
+        // 입력 auctionState가 없는 경우는 진행 중인 것으로 판단한다.
+        if (searchAllAuctionDto.getAuctionState() == null)
+            searchAllAuctionDto.setAuctionState(AuctionStateEnum.AUCTION_IS_IN_PROGRESS);
+
+        Integer page = searchAllAuctionDto.getPage();
+        Integer size = searchAllAuctionDto.getSize();
+
+        // page, size 미지정 시, 기본값 할당
+        if (page == null || page < 0) page = PageState.DEFAULT.getPage();
+        if (size == null || size <= 0) size = PageState.DEFAULT.getSize();
+
+        Page<ReadAuctionPost> readAuctionPostPage = readAuctionPostRepository.findAllAuctionPost(
+                searchAllAuctionDto, PageRequest.of(page, size)
+        );
+
+        // 조회 없는 경우 예외 처리
+        if (readAuctionPostPage.isEmpty()) {
+            log.info("Search Auction result is Empty");
+            throw new CustomException(ResponseStatus.NO_DATA);
+        }
+
+        List<ReadAuctionPost> auctionPosts = readAuctionPostPage.getContent();
+
+        // Vo에 들어가는 데이터로 변환
+        List<AuctionPostDto> auctionPostDtos = new ArrayList<>();
+
+        for(ReadAuctionPost readAuctionPost : auctionPosts) {
+            String thumbnail = auctionImagesRepository.getThumbnailUrl(
+                    readAuctionPost.getAuctionUuid());
+
+            log.info("thumbnail >>> {}", thumbnail);
+
+            auctionPostDtos.add(AuctionPostDto.builder()
+                            .auctionUuid(readAuctionPost.getAuctionUuid())
+                            .influencerUuid(readAuctionPost.getInfluencerUuid())
+                            .influencerName(readAuctionPost.getInfluencerName())
+                            .title(readAuctionPost.getTitle())
+                            .localName(readAuctionPost.getLocalName())
+                            .eventPlace(readAuctionPost.getEventPlace())
+                            .eventStartTime(readAuctionPost.getEventStartTime())
+                            .eventCloseTime(readAuctionPost.getEventCloseTime())
+                            .auctionStartTime(readAuctionPost.getAuctionStartTime())
+                            .startPrice(readAuctionPost.getStartPrice())
+                            .thumbnail(thumbnail)
+                    .build());
+        }
+
+        boolean hasNext = readAuctionPostPage.hasNext();
+
+        return SearchAllAuctionResponseVo.builder()
+                .auctionPostDtos(auctionPostDtos)
+                .currentPage(page)
+                .hasNext(hasNext)
+                .build();
     }
 
     private void createScheduler(String auctionUuid) {
