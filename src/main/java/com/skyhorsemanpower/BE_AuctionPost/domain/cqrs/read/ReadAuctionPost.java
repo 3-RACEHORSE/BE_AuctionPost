@@ -26,8 +26,10 @@ public class ReadAuctionPost {
     private String auctionUuid;
     private String adminUuid;
     private String influencerUuid;
+    private String influencerName;
     private String title;
     private String content;
+    private String localName;
     private String eventPlace;
     private LocalDateTime eventStartTime;
     private LocalDateTime eventCloseTime;
@@ -40,15 +42,17 @@ public class ReadAuctionPost {
 
     @Builder
     public ReadAuctionPost(String auctionPostId, String auctionUuid, String adminUuid, String influencerUuid,
-                           String title, String content, String eventPlace, LocalDateTime eventStartTime,
-                           LocalDateTime eventCloseTime, LocalDateTime auctionStartTime, BigDecimal startPrice,
-                           BigDecimal incrementUnit, AuctionStateEnum state) {
+                           String influencerName, String title, String content, String localName, String eventPlace,
+                           LocalDateTime eventStartTime, LocalDateTime eventCloseTime, LocalDateTime auctionStartTime,
+                           BigDecimal startPrice, BigDecimal incrementUnit, AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
         this.adminUuid = adminUuid;
         this.influencerUuid = influencerUuid;
+        this.influencerName = influencerName;
         this.title = title;
         this.content = content;
+        this.localName = localName;
         this.eventPlace = eventPlace;
         this.eventStartTime = eventStartTime;
         this.eventCloseTime = eventCloseTime;

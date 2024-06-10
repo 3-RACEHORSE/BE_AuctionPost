@@ -29,11 +29,17 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
     @Column(nullable = false, length = 30)
     private String influencerUuid;
 
+    @Column(nullable = false, length = 30)
+    private String influencerName;
+
     @Column(nullable = false, length = 50)
     private String title;
 
     @Column(nullable = false, length = 1000)
     private String content;
+
+    @Column(nullable = false, length = 40)
+    private String localName;
 
     @Column(nullable = false, length = 40)
     private String eventPlace;
@@ -60,15 +66,17 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
 
     @Builder
     public CommandAuctionPost(long auctionPostId, String auctionUuid, String adminUuid, String influencerUuid,
-                              String title, String content, String eventPlace, LocalDateTime eventStartTime,
-                              LocalDateTime eventCloseTime, LocalDateTime auctionStartTime, BigDecimal startPrice,
-                              BigDecimal incrementUnit, AuctionStateEnum state) {
+                              String influencerName, String title, String content, String localName, String eventPlace,
+                              LocalDateTime eventStartTime, LocalDateTime eventCloseTime, LocalDateTime auctionStartTime,
+                              BigDecimal startPrice, BigDecimal incrementUnit, AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
         this.adminUuid = adminUuid;
         this.influencerUuid = influencerUuid;
+        this.influencerName = influencerName;
         this.title = title;
         this.content = content;
+        this.localName = localName;
         this.eventPlace = eventPlace;
         this.eventStartTime = eventStartTime;
         this.eventCloseTime = eventCloseTime;

@@ -12,8 +12,10 @@ import java.util.List;
 public class CreateAuctionPostRequestVo {
     private String auctionUuid;
     private String influencerUuid;
+    private String influencerName;
     private String title;
     private String content;
+    private String localName;
     private String eventPlace;
     private LocalDateTime eventStartTime;
     private LocalDateTime eventCloseTime;
