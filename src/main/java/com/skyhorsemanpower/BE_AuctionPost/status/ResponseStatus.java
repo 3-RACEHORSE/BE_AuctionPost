@@ -35,7 +35,11 @@ public enum ResponseStatus {
     CAN_NOT_BIDDING(404, "입찰이 불가능합니다."),
 
     // 예외 테스트 용
-    EXCEPTION_TEST(500, "예외 테스트") ;
+    EXCEPTION_TEST(500, "예외 테스트"),
+
+    // 조건문이 비어있는 경우
+    BLANK_CRITERIA(400, "조건문이 비어있습니다.")
+    ;
 
     private final int code;
     private final String message;
