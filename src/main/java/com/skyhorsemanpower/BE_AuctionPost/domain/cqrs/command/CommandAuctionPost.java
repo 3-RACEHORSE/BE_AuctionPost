@@ -23,10 +23,10 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
     @Column(nullable = false, length = 30)
     private String auctionUuid;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 50)
     private String adminUuid;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 50)
     private String influencerUuid;
 
     @Column(nullable = false, length = 30)
