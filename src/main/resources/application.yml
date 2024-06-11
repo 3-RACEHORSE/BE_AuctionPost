@@ -1,16 +1,14 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/auction_post
-    username: root
-    password: 1234
-    driver-class-name: org.postgresql.Driver
+  application:
+    name: auction-post-service
+  profiles:
+    active: none
+  config:
+    import: optional:configserver:http://52.79.127.196:8071
 
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/auction_post
-      auto-index-creation: true
-  jpa:
-    show-sql: true
-    database: postgresql
-    hibernate:
-      ddl-auto: create
+  cloud:
+    config:
+      profile: ${PROFILE}
+
+encrypt:
+  key: ${ENCRYPT_KEY}
