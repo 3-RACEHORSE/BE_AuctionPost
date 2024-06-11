@@ -23,12 +23,13 @@ public class AuctionPostDto {
     private BigDecimal totalDonation;
 
     private String thumbnail;
+    private BigDecimal incrementUnit;
 
     @Builder
     public AuctionPostDto(String auctionUuid, String influencerUuid, String influencerName, String title,
                           String localName, String eventPlace, LocalDateTime eventStartTime,
                           LocalDateTime eventCloseTime, LocalDateTime auctionStartTime,
-                          BigDecimal startPrice, BigDecimal totalDonation, String thumbnail) {
+                          BigDecimal startPrice, BigDecimal totalDonation, String thumbnail, BigDecimal incrementUnit) {
         this.auctionUuid = auctionUuid;
         this.influencerUuid = influencerUuid;
         this.influencerName = influencerName;
@@ -41,5 +42,6 @@ public class AuctionPostDto {
         this.startPrice = startPrice;
         this.totalDonation = totalDonation;
         this.thumbnail = thumbnail;
+        this.incrementUnit = incrementUnit;
     }
 }
