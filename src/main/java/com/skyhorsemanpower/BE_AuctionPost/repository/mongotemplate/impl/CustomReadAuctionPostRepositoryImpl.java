@@ -1,14 +1,13 @@
 package com.skyhorsemanpower.BE_AuctionPost.repository.mongotemplate.impl;
 
 import com.skyhorsemanpower.BE_AuctionPost.common.CustomException;
-import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read.ReadAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.repository.mongotemplate.CustomReadAuctionPostRepository;
 import com.skyhorsemanpower.BE_AuctionPost.status.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -26,7 +25,7 @@ public class CustomReadAuctionPostRepositoryImpl implements CustomReadAuctionPos
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public Page<ReadAuctionPost> findAllAuctionPost(SearchAllAuctionDto searchAllAuctionDto, Pageable pageable) {
+    public Page<ReadAuctionPost> findAllAuctionPost(SearchAllAuctionPostDto searchAllAuctionDto, Pageable pageable) {
         log.info("SearchAllAuctionDto >>> {}", searchAllAuctionDto.toString());
 
         Criteria criteria = new Criteria();
