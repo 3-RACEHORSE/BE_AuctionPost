@@ -106,6 +106,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                     .startPrice(readAuctionPost.getStartPrice())
                     .totalDonation(readAuctionPost.getTotalDonation())
                     .thumbnail(thumbnail)
+                    .incrementUnit(readAuctionPost.getIncrementUnit())
                     .build());
         }
 
@@ -178,6 +179,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                     .startPrice(readAuctionPost.getStartPrice())
                     .totalDonation(readAuctionPost.getTotalDonation())
                     .thumbnail(thumbnail)
+                    .incrementUnit(readAuctionPost.getIncrementUnit())
                     .build());
         }
 

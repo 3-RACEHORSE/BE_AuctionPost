@@ -5,6 +5,7 @@ import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerAllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read.ReadAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.repository.mongotemplate.CustomReadAuctionPostRepository;
+import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
 import com.skyhorsemanpower.BE_AuctionPost.status.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
@@ -111,4 +113,11 @@ public class CustomReadAuctionPostRepositoryImpl implements CustomReadAuctionPos
                 pageable,
                 () -> mongoTemplate.count(query.skip(-1).limit(-1), ReadAuctionPost.class)
         );    }
+
+    @Override
+    public void updateStateByAuctionUuid(String auctionUuid, AuctionStateEnum state) {
+        Query query = new Query(Criteria.where("auctionUuid").is(auctionUuid));
+        Update update = new Update().set("state", state);
+        mongoTemplate.updateFirst(query, update, ReadAuctionPost.class);
+    }
 }
