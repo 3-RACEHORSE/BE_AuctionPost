@@ -1,8 +1,10 @@
 package com.skyhorsemanpower.BE_AuctionPost.application;
 
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.CreateAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerAllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionResponseVo;
 
@@ -12,4 +14,6 @@ public interface AuctionPostService {
     SearchAllAuctionPostResponseVo searchAllAuction(SearchAllAuctionPostDto searchAllAuctionPostDto);
 
     SearchAuctionResponseVo searchAuctionPost(SearchAuctionPostDto searchAuctionPostDto);
+
+    InfluencerAllAuctionPostResponseVo influencerAuctionPost(InfluencerAllAuctionPostDto influencerAllAuctionPostDto);
 }
