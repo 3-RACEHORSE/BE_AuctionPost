@@ -6,10 +6,8 @@ import com.skyhorsemanpower.BE_AuctionPost.data.dto.CreateAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerAllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionPostDto;
-import com.skyhorsemanpower.BE_AuctionPost.data.vo.CreateAuctionPostRequestVo;
-import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerAllAuctionPostResponseVo;
-import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionPostResponseVo;
-import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionResponseVo;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.*;
+import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.read.ReadAuctionPostRepository;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auction-post")
 public class AuctionPostController {
     private final AuctionPostService auctionPostService;
+    private final ReadAuctionPostRepository readAuctionPostRepository;
 
     // 경매글 등록
     @PostMapping("")
@@ -73,4 +72,17 @@ public class AuctionPostController {
                 .auctionState(auctionState).page(page).size(size).build()));
     }
 
+    // 경매글 상태를 변경
+    @PutMapping("change-state")
+    @Operation(summary = "특정 경매글 상태를 변경", description = "특정 경매글 상태를 변경")
+    public SuccessResponse<Object> changeAuctionPostState (
+            @RequestHeader String uuid,
+            @RequestBody ChangeAuctionPostStateRequestVo changeAuctionPostStateRequestVo) {
+
+        // 현재는 mongoDB 데이터만 수정
+        readAuctionPostRepository.updateStateByAuctionUuid(
+                changeAuctionPostStateRequestVo.getAuctionUuid(),
+                changeAuctionPostStateRequestVo.getState());
+        return new SuccessResponse<>(null);
+    }
 }
