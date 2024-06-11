@@ -48,11 +48,15 @@ public class QCommandAuctionPost extends EntityPathBase<CommandAuctionPost> {
 
     public final StringPath localName = createString("localName");
 
+    public final NumberPath<Integer> numberOfEventParticipants = createNumber("numberOfEventParticipants", Integer.class);
+
     public final NumberPath<java.math.BigDecimal> startPrice = createNumber("startPrice", java.math.BigDecimal.class);
 
     public final EnumPath<com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum> state = createEnum("state", com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum.class);
 
     public final StringPath title = createString("title");
+
+    public final NumberPath<java.math.BigDecimal> totalDonation = createNumber("totalDonation", java.math.BigDecimal.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

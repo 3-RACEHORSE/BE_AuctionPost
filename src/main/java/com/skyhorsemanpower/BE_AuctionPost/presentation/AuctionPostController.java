@@ -3,9 +3,11 @@ package com.skyhorsemanpower.BE_AuctionPost.presentation;
 import com.skyhorsemanpower.BE_AuctionPost.application.AuctionPostService;
 import com.skyhorsemanpower.BE_AuctionPost.common.SuccessResponse;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.CreateAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerAllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.CreateAuctionPostRequestVo;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
@@ -56,4 +58,19 @@ public class AuctionPostController {
         return new SuccessResponse<>(auctionPostService.searchAuctionPost(SearchAuctionPostDto.builder()
                         .auctionUuid(auctionUuid).build()));
     }
+
+    // 특정 인플루언서가 참여하는 경매글 조회
+    @GetMapping("/influencer/{influencerUuid}")
+    @Operation(summary = "특정 인플루언서가 참여하는 경매글 리스트 조회", description = "특정 인플루언서가 참여하는 경매글 리스트 조회")
+    public SuccessResponse<InfluencerAllAuctionPostResponseVo> influencerAuctionPost (
+            @RequestHeader String uuid,
+            @PathVariable("influencerUuid") String influencerUuid,
+            @RequestParam(required = false) AuctionStateEnum auctionState,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return new SuccessResponse<>(auctionPostService.influencerAuctionPost(InfluencerAllAuctionPostDto.builder()
+                        .influencerUuid(influencerUuid)
+                .auctionState(auctionState).page(page).size(size).build()));
+    }
+
 }

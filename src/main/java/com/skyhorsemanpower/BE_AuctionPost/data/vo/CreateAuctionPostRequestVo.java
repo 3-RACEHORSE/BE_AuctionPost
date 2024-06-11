@@ -10,11 +10,11 @@ import java.util.List;
 @Getter
 @ToString
 public class CreateAuctionPostRequestVo {
-    private String auctionUuid;
     private String influencerUuid;
     private String influencerName;
     private String title;
     private String content;
+    private int numberOfEventParticipants;
     private String localName;
     private String eventPlace;
     private LocalDateTime eventStartTime;
