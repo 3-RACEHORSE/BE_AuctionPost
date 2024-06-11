@@ -18,7 +18,7 @@ public class AuctionImages {
     @Column(nullable = false)
     private String auctionUuid;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String imageUrl;
 
     @Column(nullable = false)
