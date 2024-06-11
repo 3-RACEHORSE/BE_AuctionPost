@@ -10,7 +10,7 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class SearchAllAuctionDto {
+public class SearchAllAuctionPostDto {
     private String uuid;
     private String title;
     private String influencerName;

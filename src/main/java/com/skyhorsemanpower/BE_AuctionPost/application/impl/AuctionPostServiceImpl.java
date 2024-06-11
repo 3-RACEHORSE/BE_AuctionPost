@@ -5,8 +5,10 @@ import com.skyhorsemanpower.BE_AuctionPost.common.CustomException;
 import com.skyhorsemanpower.BE_AuctionPost.config.QuartzConfig;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.AuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.CreateAuctionPostDto;
-import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionDto;
-import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionResponseVo;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionPostResponseVo;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.domain.AuctionImages;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.command.CommandAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read.ReadAuctionPost;
@@ -60,7 +62,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 
     @Override
     @Transactional
-    public SearchAllAuctionResponseVo searchAllAuction(SearchAllAuctionDto searchAllAuctionDto) {
+    public SearchAllAuctionPostResponseVo searchAllAuction(SearchAllAuctionPostDto searchAllAuctionDto) {
         // 입력 auctionState가 없는 경우는 진행 중인 것으로 판단한다.
         if (searchAllAuctionDto.getAuctionState() == null)
             searchAllAuctionDto.setAuctionState(AuctionStateEnum.AUCTION_IS_IN_PROGRESS);
@@ -110,12 +112,26 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 
         boolean hasNext = readAuctionPostPage.hasNext();
 
-        return SearchAllAuctionResponseVo.builder()
+        return SearchAllAuctionPostResponseVo.builder()
                 .auctionPostDtos(auctionPostDtos)
                 .currentPage(page)
                 .hasNext(hasNext)
                 .build();
     }
+
+    @Override
+    public SearchAuctionResponseVo searchAuctionPost(SearchAuctionPostDto searchAuctionPostDto) {
+        ReadAuctionPost readAuctionPost = readAuctionPostRepository.findByAuctionUuid(
+                searchAuctionPostDto.getAuctionUuid()).orElseThrow(
+                () -> new CustomException(ResponseStatus.NO_DATA)
+        );
+        return SearchAuctionResponseVo.builder()
+                .readAuctionPost(readAuctionPost)
+                .thumbnail(auctionImagesRepository.getThumbnailUrl(searchAuctionPostDto.getAuctionUuid()))
+                .images(auctionImagesRepository.getImagesUrl(searchAuctionPostDto.getAuctionUuid()))
+                .build();
+    }
+
 
     private void createScheduler(String auctionUuid) {
         try {

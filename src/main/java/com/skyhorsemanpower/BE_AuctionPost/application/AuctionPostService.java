@@ -1,11 +1,15 @@
 package com.skyhorsemanpower.BE_AuctionPost.application;
 
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.CreateAuctionPostDto;
-import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionDto;
-import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionResponseVo;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionPostResponseVo;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionResponseVo;
 
 public interface AuctionPostService {
     void createAuctionPost(CreateAuctionPostDto createAuctionPostDto);
 
-    SearchAllAuctionResponseVo searchAllAuction(SearchAllAuctionDto searchAllAuctionDto);
+    SearchAllAuctionPostResponseVo searchAllAuction(SearchAllAuctionPostDto searchAllAuctionPostDto);
+
+    SearchAuctionResponseVo searchAuctionPost(SearchAuctionPostDto searchAuctionPostDto);
 }

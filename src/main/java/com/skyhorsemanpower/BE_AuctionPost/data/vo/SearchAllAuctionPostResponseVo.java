@@ -11,13 +11,13 @@ import java.util.List;
 @Getter
 @ToString
 @NoArgsConstructor
-public class SearchAllAuctionResponseVo {
+public class SearchAllAuctionPostResponseVo {
     private List<AuctionPostDto> auctionPostDtos;
     private int currentPage;
     private boolean hasNext;
 
     @Builder
-    public SearchAllAuctionResponseVo(List<AuctionPostDto> auctionPostDtos, int currentPage, boolean hasNext) {
+    public SearchAllAuctionPostResponseVo(List<AuctionPostDto> auctionPostDtos, int currentPage, boolean hasNext) {
         this.auctionPostDtos = auctionPostDtos;
         this.currentPage = currentPage;
         this.hasNext = hasNext;
