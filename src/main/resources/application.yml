@@ -1,10 +1,10 @@
 spring:
   application:
-    name: auctionpost-service
+    name: auction-post-service
   profiles:
     active: none
   config:
-    import: optional:configserver:${CONFIG_SERVER_URL}
+    import: optional:configserver:http://52.79.127.196:8071
 
   cloud:
     config:

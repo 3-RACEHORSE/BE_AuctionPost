@@ -19,6 +19,7 @@ public class CreateAuctionPostDto {
     private String influencerName;
     private String title;
     private String content;
+    private int numberOfEventParticipants;
     private String localName;
     private String eventPlace;
     private LocalDateTime eventStartTime;
@@ -32,14 +33,16 @@ public class CreateAuctionPostDto {
 
     @Builder
     public CreateAuctionPostDto(String adminUuid, String influencerUuid, String influencerName, String title,
-                                String content, String localName, String eventPlace, LocalDateTime eventStartTime,
-                                LocalDateTime eventCloseTime, LocalDateTime auctionStartTime, BigDecimal startPrice,
-                                BigDecimal incrementUnit, String thumbnail, List<String> images, String auctionUuid) {
+                                String content, int numberOfEventParticipants, String localName, String eventPlace,
+                                LocalDateTime eventStartTime, LocalDateTime eventCloseTime,
+                                LocalDateTime auctionStartTime, BigDecimal startPrice, BigDecimal incrementUnit,
+                                String thumbnail, List<String> images, String auctionUuid) {
         this.adminUuid = adminUuid;
         this.influencerUuid = influencerUuid;
         this.influencerName = influencerName;
         this.title = title;
         this.content = content;
+        this.numberOfEventParticipants = numberOfEventParticipants;
         this.localName = localName;
         this.eventPlace = eventPlace;
         this.eventStartTime = eventStartTime;
@@ -61,6 +64,7 @@ public class CreateAuctionPostDto {
                 .influencerName(createAuctionPostRequestVo.getInfluencerName())
                 .title(createAuctionPostRequestVo.getTitle())
                 .content(createAuctionPostRequestVo.getContent())
+                .numberOfEventParticipants(createAuctionPostRequestVo.getNumberOfEventParticipants())
                 .localName(createAuctionPostRequestVo.getLocalName())
                 .eventPlace(createAuctionPostRequestVo.getEventPlace())
                 .eventStartTime(createAuctionPostRequestVo.getEventStartTime())

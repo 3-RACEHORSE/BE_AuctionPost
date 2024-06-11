@@ -20,6 +20,7 @@ public class AuctionPostDto {
     private LocalDateTime eventCloseTime;
     private LocalDateTime auctionStartTime;
     private BigDecimal startPrice;
+    private BigDecimal totalDonation;
 
     private String thumbnail;
 
@@ -27,7 +28,7 @@ public class AuctionPostDto {
     public AuctionPostDto(String auctionUuid, String influencerUuid, String influencerName, String title,
                           String localName, String eventPlace, LocalDateTime eventStartTime,
                           LocalDateTime eventCloseTime, LocalDateTime auctionStartTime,
-                          BigDecimal startPrice, String thumbnail) {
+                          BigDecimal startPrice, BigDecimal totalDonation, String thumbnail) {
         this.auctionUuid = auctionUuid;
         this.influencerUuid = influencerUuid;
         this.influencerName = influencerName;
@@ -38,6 +39,7 @@ public class AuctionPostDto {
         this.eventCloseTime = eventCloseTime;
         this.auctionStartTime = auctionStartTime;
         this.startPrice = startPrice;
+        this.totalDonation = totalDonation;
         this.thumbnail = thumbnail;
     }
 }
