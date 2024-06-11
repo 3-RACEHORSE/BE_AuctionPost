@@ -3,10 +3,8 @@ package com.skyhorsemanpower.BE_AuctionPost.application.impl;
 import com.skyhorsemanpower.BE_AuctionPost.application.AuctionPostService;
 import com.skyhorsemanpower.BE_AuctionPost.common.CustomException;
 import com.skyhorsemanpower.BE_AuctionPost.config.QuartzConfig;
-import com.skyhorsemanpower.BE_AuctionPost.data.dto.AuctionPostDto;
-import com.skyhorsemanpower.BE_AuctionPost.data.dto.CreateAuctionPostDto;
-import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionPostDto;
-import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.*;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.domain.AuctionImages;
@@ -130,6 +128,65 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                 .readAuctionPost(readAuctionPost)
                 .thumbnail(auctionImagesRepository.getThumbnailUrl(searchAuctionPostDto.getAuctionUuid()))
                 .images(auctionImagesRepository.getImagesUrl(searchAuctionPostDto.getAuctionUuid()))
+                .build();
+    }
+
+    @Override
+    public InfluencerAllAuctionPostResponseVo influencerAuctionPost(InfluencerAllAuctionPostDto influencerAllAuctionPostDto) {
+        // 입력 auctionState가 없는 경우는 진행 중인 것으로 판단한다.
+        if (influencerAllAuctionPostDto.getAuctionState() == null)
+            influencerAllAuctionPostDto.setAuctionState(AuctionStateEnum.AUCTION_IS_IN_PROGRESS);
+
+        Integer page = influencerAllAuctionPostDto.getPage();
+        Integer size = influencerAllAuctionPostDto.getSize();
+
+        // page, size 미지정 시, 기본값 할당
+        if (page == null || page < 0) page = PageState.DEFAULT.getPage();
+        if (size == null || size <= 0) size = PageState.DEFAULT.getSize();
+
+        Page<ReadAuctionPost> readAuctionPostPage = readAuctionPostRepository.findAllInfluencerAuctionPost(
+                influencerAllAuctionPostDto, PageRequest.of(page, size)
+        );
+
+        // 조회 없는 경우 예외 처리
+        if (readAuctionPostPage.isEmpty()) {
+            log.info("Search Influencer Auction result is Empty");
+            throw new CustomException(ResponseStatus.NO_DATA);
+        }
+
+        List<ReadAuctionPost> auctionPosts = readAuctionPostPage.getContent();
+
+        // Vo에 들어가는 데이터로 변환
+        List<AuctionPostDto> auctionPostDtos = new ArrayList<>();
+
+        for (ReadAuctionPost readAuctionPost : auctionPosts) {
+            String thumbnail = auctionImagesRepository.getThumbnailUrl(
+                    readAuctionPost.getAuctionUuid());
+
+            log.info("thumbnail >>> {}", thumbnail);
+
+            auctionPostDtos.add(AuctionPostDto.builder()
+                    .auctionUuid(readAuctionPost.getAuctionUuid())
+                    .influencerUuid(readAuctionPost.getInfluencerUuid())
+                    .influencerName(readAuctionPost.getInfluencerName())
+                    .title(readAuctionPost.getTitle())
+                    .localName(readAuctionPost.getLocalName())
+                    .eventPlace(readAuctionPost.getEventPlace())
+                    .eventStartTime(readAuctionPost.getEventStartTime())
+                    .eventCloseTime(readAuctionPost.getEventCloseTime())
+                    .auctionStartTime(readAuctionPost.getAuctionStartTime())
+                    .startPrice(readAuctionPost.getStartPrice())
+                    .totalDonation(readAuctionPost.getTotalDonation())
+                    .thumbnail(thumbnail)
+                    .build());
+        }
+
+        boolean hasNext = readAuctionPostPage.hasNext();
+
+        return InfluencerAllAuctionPostResponseVo.builder()
+                .auctionPostDtos(auctionPostDtos)
+                .currentPage(page)
+                .hasNext(hasNext)
                 .build();
     }
 
