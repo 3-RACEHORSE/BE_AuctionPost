@@ -89,24 +89,25 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         // Vo에 들어가는 데이터로 변환
         List<AuctionPostDto> auctionPostDtos = new ArrayList<>();
 
-        for(ReadAuctionPost readAuctionPost : auctionPosts) {
+        for (ReadAuctionPost readAuctionPost : auctionPosts) {
             String thumbnail = auctionImagesRepository.getThumbnailUrl(
                     readAuctionPost.getAuctionUuid());
 
             log.info("thumbnail >>> {}", thumbnail);
 
             auctionPostDtos.add(AuctionPostDto.builder()
-                            .auctionUuid(readAuctionPost.getAuctionUuid())
-                            .influencerUuid(readAuctionPost.getInfluencerUuid())
-                            .influencerName(readAuctionPost.getInfluencerName())
-                            .title(readAuctionPost.getTitle())
-                            .localName(readAuctionPost.getLocalName())
-                            .eventPlace(readAuctionPost.getEventPlace())
-                            .eventStartTime(readAuctionPost.getEventStartTime())
-                            .eventCloseTime(readAuctionPost.getEventCloseTime())
-                            .auctionStartTime(readAuctionPost.getAuctionStartTime())
-                            .startPrice(readAuctionPost.getStartPrice())
-                            .thumbnail(thumbnail)
+                    .auctionUuid(readAuctionPost.getAuctionUuid())
+                    .influencerUuid(readAuctionPost.getInfluencerUuid())
+                    .influencerName(readAuctionPost.getInfluencerName())
+                    .title(readAuctionPost.getTitle())
+                    .localName(readAuctionPost.getLocalName())
+                    .eventPlace(readAuctionPost.getEventPlace())
+                    .eventStartTime(readAuctionPost.getEventStartTime())
+                    .eventCloseTime(readAuctionPost.getEventCloseTime())
+                    .auctionStartTime(readAuctionPost.getAuctionStartTime())
+                    .startPrice(readAuctionPost.getStartPrice())
+                    .totalDonation(readAuctionPost.getTotalDonation())
+                    .thumbnail(thumbnail)
                     .build());
         }
 
@@ -152,6 +153,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                             .influencerName(createAuctionPostDto.getInfluencerName())
                             .title(createAuctionPostDto.getTitle())
                             .content(createAuctionPostDto.getContent())
+                            .numberOfEventParticipants(createAuctionPostDto.getNumberOfEventParticipants())
                             .localName(createAuctionPostDto.getLocalName())
                             .eventPlace(createAuctionPostDto.getEventPlace())
                             .eventStartTime(createAuctionPostDto.getEventStartTime())
@@ -206,6 +208,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                     .influencerName(createAuctionPostDto.getInfluencerName())
                     .title(createAuctionPostDto.getTitle())
                     .content(createAuctionPostDto.getContent())
+                    .numberOfEventParticipants(createAuctionPostDto.getNumberOfEventParticipants())
                     .localName(createAuctionPostDto.getLocalName())
                     .eventPlace(createAuctionPostDto.getEventPlace())
                     .eventStartTime(createAuctionPostDto.getEventStartTime())

@@ -29,6 +29,7 @@ public class ReadAuctionPost {
     private String influencerName;
     private String title;
     private String content;
+    private int numberOfEventParticipants;
     private String localName;
     private String eventPlace;
     private LocalDateTime eventStartTime;
@@ -36,15 +37,17 @@ public class ReadAuctionPost {
     private LocalDateTime auctionStartTime;
     private BigDecimal startPrice;
     private BigDecimal incrementUnit;
+    private BigDecimal totalDonation;
     private AuctionStateEnum state;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     @Builder
     public ReadAuctionPost(String auctionPostId, String auctionUuid, String adminUuid, String influencerUuid,
-                           String influencerName, String title, String content, String localName, String eventPlace,
-                           LocalDateTime eventStartTime, LocalDateTime eventCloseTime, LocalDateTime auctionStartTime,
-                           BigDecimal startPrice, BigDecimal incrementUnit, AuctionStateEnum state) {
+                           String influencerName, String title, String content, int numberOfEventParticipants,
+                           String localName, String eventPlace, LocalDateTime eventStartTime,
+                           LocalDateTime eventCloseTime, LocalDateTime auctionStartTime, BigDecimal startPrice,
+                           BigDecimal incrementUnit, BigDecimal totalDonation,  AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
         this.adminUuid = adminUuid;
@@ -52,6 +55,7 @@ public class ReadAuctionPost {
         this.influencerName = influencerName;
         this.title = title;
         this.content = content;
+        this.numberOfEventParticipants = numberOfEventParticipants;
         this.localName = localName;
         this.eventPlace = eventPlace;
         this.eventStartTime = eventStartTime;
@@ -59,6 +63,7 @@ public class ReadAuctionPost {
         this.auctionStartTime = auctionStartTime;
         this.startPrice = startPrice;
         this.incrementUnit = incrementUnit;
+        this.totalDonation = totalDonation;
         this.state = state;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();

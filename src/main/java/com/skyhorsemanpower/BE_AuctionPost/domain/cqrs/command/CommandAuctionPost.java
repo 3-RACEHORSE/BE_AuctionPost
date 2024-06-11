@@ -38,6 +38,9 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
     @Column(nullable = false, length = 1000)
     private String content;
 
+    @Column(nullable = false, columnDefinition = "integer default 200")
+    private int numberOfEventParticipants;
+
     @Column(nullable = false, length = 40)
     private String localName;
 
@@ -53,11 +56,14 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
     @Column(nullable = false, length = 30)
     private LocalDateTime auctionStartTime;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal startPrice;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal incrementUnit;
+
+    @Column(nullable = true, precision = 10, scale = 2)
+    private BigDecimal totalDonation;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -66,9 +72,10 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
 
     @Builder
     public CommandAuctionPost(long auctionPostId, String auctionUuid, String adminUuid, String influencerUuid,
-                              String influencerName, String title, String content, String localName, String eventPlace,
-                              LocalDateTime eventStartTime, LocalDateTime eventCloseTime, LocalDateTime auctionStartTime,
-                              BigDecimal startPrice, BigDecimal incrementUnit, AuctionStateEnum state) {
+                              String influencerName, String title, String content, int numberOfEventParticipants,
+                              String localName, String eventPlace, LocalDateTime eventStartTime,
+                              LocalDateTime eventCloseTime, LocalDateTime auctionStartTime, BigDecimal startPrice,
+                              BigDecimal incrementUnit, BigDecimal totalDonation, AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
         this.adminUuid = adminUuid;
@@ -76,6 +83,7 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
         this.influencerName = influencerName;
         this.title = title;
         this.content = content;
+        this.numberOfEventParticipants = numberOfEventParticipants;
         this.localName = localName;
         this.eventPlace = eventPlace;
         this.eventStartTime = eventStartTime;
@@ -83,6 +91,7 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
         this.auctionStartTime = auctionStartTime;
         this.startPrice = startPrice;
         this.incrementUnit = incrementUnit;
+        this.totalDonation = totalDonation;
         this.state = state;
     }
 }
