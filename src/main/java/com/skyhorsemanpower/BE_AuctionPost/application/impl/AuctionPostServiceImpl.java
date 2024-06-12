@@ -62,9 +62,9 @@ public class AuctionPostServiceImpl implements AuctionPostService {
     @Override
     @Transactional
     public SearchAllAuctionPostResponseVo searchAllAuction(SearchAllAuctionPostDto searchAllAuctionDto) {
-        // 입력 auctionState가 없는 경우는 진행 중인 것으로 판단한다.
+        // 입력 auctionState가 없는 경우는 모든 경매를 조회한다.
         if (searchAllAuctionDto.getAuctionState() == null)
-            searchAllAuctionDto.setAuctionState(AuctionStateEnum.AUCTION_IS_IN_PROGRESS);
+            searchAllAuctionDto.setAuctionState(AuctionStateEnum.ALL_AUCTION);
 
         Integer page = searchAllAuctionDto.getPage();
         Integer size = searchAllAuctionDto.getSize();

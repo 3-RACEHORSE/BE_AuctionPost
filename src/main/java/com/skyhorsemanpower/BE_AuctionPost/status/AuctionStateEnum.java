@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum AuctionStateEnum {
+    // 모든 경매글 검색을 위해 선언한 필드
+    ALL_AUCTION,
     // 경매 진행 전
     BEFORE_AUCTION,
     // 경매 진행 중

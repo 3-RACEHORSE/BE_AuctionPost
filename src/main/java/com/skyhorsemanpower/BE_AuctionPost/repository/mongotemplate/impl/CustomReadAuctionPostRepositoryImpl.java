@@ -36,8 +36,19 @@ public class CustomReadAuctionPostRepositoryImpl implements CustomReadAuctionPos
         boolean hasCriteria = false;
 
         if (searchAllAuctionDto.getAuctionState() != null) {
-            criteria.and("state").is(searchAllAuctionDto.getAuctionState());
-            hasCriteria = true;
+
+            // 모든 경매글 검색
+            if (searchAllAuctionDto.getAuctionState().equals(AuctionStateEnum.ALL_AUCTION)) {
+                // ne는 not equal 이라는 의미
+                criteria.and("state").ne(null);
+                hasCriteria = true;
+            }
+
+            // 특정 상태 경매글 검색
+            else {
+                criteria.and("state").is(searchAllAuctionDto.getAuctionState());
+                hasCriteria = true;
+            }
         }
         if (searchAllAuctionDto.getTitle() != null) {
             criteria.and("title").regex(searchAllAuctionDto.getTitle(), "i");
