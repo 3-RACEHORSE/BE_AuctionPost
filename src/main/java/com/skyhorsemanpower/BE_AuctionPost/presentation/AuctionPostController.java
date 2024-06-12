@@ -35,11 +35,11 @@ public class AuctionPostController {
     }
 
     // 인플루언서 이름 검색(경매글 상태와 무관)
-    @GetMapping("/search/influencer/{influencerName}")
+    @GetMapping("/search/influencer")
     @Operation(summary = "인플루언서 이름을 통한 경매글 리스트 조회", description = "인플루언서 이름을 통한 경매글 리스트 조회")
     public SuccessResponse<SearchAllAuctionPostResponseVo> searchAllAuctionPostByInfluencerName (
             @RequestHeader(required = false) String uuid,
-            @PathVariable("influencerName") String influencerName,
+            @RequestParam String influencerName,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
@@ -48,11 +48,11 @@ public class AuctionPostController {
     }
 
     // 지역 검색(경매글 상태와 무관)
-    @GetMapping("/search/local/{localName}")
+    @GetMapping("/search/local")
     @Operation(summary = "지역을 통한 경매글 리스트 조회", description = "지역을 통한 경매글 리스트 조회")
     public SuccessResponse<SearchAllAuctionPostResponseVo> searchAllAuctionPostByLocalName (
             @RequestHeader(required = false) String uuid,
-            @PathVariable("localName") String localName,
+            @RequestParam String localName,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
@@ -61,11 +61,11 @@ public class AuctionPostController {
     }
 
     // 제목 검색(경매글 상태와 무관)
-    @GetMapping("/search/title/{title}")
+    @GetMapping("/search/title")
     @Operation(summary = "제목을 통한 경매글 리스트 조회", description = "제목을 통한 경매글 리스트 조회")
     public SuccessResponse<SearchAllAuctionPostResponseVo> searchAllAuctionPostByTitle (
             @RequestHeader(required = false) String uuid,
-            @PathVariable("title") String title,
+            @RequestParam String title,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
@@ -74,11 +74,11 @@ public class AuctionPostController {
     }
 
     // 경매 상태에 따른 검색
-    @GetMapping({"/search/state", "/search/state/{state}"})
+    @GetMapping("/search/state")
     @Operation(summary = "상태를 통한 경매글 리스트 조회", description = "상태를 통한 경매글 리스트 조회")
     public SuccessResponse<SearchAllAuctionPostResponseVo> searchAllAuctionPostByState (
             @RequestHeader(required = false) String uuid,
-            @PathVariable(value = "state", required = false) AuctionPostFilteringEnum state,
+            @RequestParam(required = false) AuctionPostFilteringEnum state,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
