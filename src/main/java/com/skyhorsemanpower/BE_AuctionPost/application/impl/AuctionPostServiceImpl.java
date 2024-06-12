@@ -104,6 +104,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                     .auctionEndTime(readAuctionPost.getAuctionEndTime())
                     .startPrice(readAuctionPost.getStartPrice())
                     .totalDonation(readAuctionPost.getTotalDonation())
+                    .state(readAuctionPost.getState())
                     .thumbnail(thumbnail)
                     .incrementUnit(readAuctionPost.getIncrementUnit())
                     .build());
@@ -178,6 +179,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                     .auctionEndTime(readAuctionPost.getAuctionEndTime())
                     .startPrice(readAuctionPost.getStartPrice())
                     .totalDonation(readAuctionPost.getTotalDonation())
+                    .state(readAuctionPost.getState())
                     .thumbnail(thumbnail)
                     .incrementUnit(readAuctionPost.getIncrementUnit())
                     .build());

@@ -1,5 +1,6 @@
 package com.skyhorsemanpower.BE_AuctionPost.data.dto;
 
+import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,13 +23,14 @@ public class AuctionPostDto {
     private LocalDateTime auctionEndTime;
     private BigDecimal startPrice;
     private BigDecimal totalDonation;
+    private AuctionStateEnum state;
 
     private String thumbnail;
     private BigDecimal incrementUnit;
 
     @Builder
     public AuctionPostDto(String auctionUuid, String influencerUuid, String influencerName, String title,
-                          String localName, String eventPlace, LocalDateTime eventStartTime,
+                          String localName, String eventPlace, LocalDateTime eventStartTime, AuctionStateEnum state,
                           LocalDateTime eventCloseTime, LocalDateTime auctionStartTime, LocalDateTime auctionEndTime,
                           BigDecimal startPrice, BigDecimal totalDonation, String thumbnail, BigDecimal incrementUnit) {
         this.auctionUuid = auctionUuid;
@@ -43,6 +45,7 @@ public class AuctionPostDto {
         this.auctionEndTime = auctionEndTime;
         this.startPrice = startPrice;
         this.totalDonation = totalDonation;
+        this.state = state;
         this.thumbnail = thumbnail;
         this.incrementUnit = incrementUnit;
     }
