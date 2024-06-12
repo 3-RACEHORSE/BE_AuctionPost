@@ -8,7 +8,9 @@ import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.*;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.read.ReadAuctionPostRepository;
+import com.skyhorsemanpower.BE_AuctionPost.status.AuctionPostFilteringEnum;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
+import com.skyhorsemanpower.BE_AuctionPost.status.LocalNameEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -32,20 +34,56 @@ public class AuctionPostController {
         return new SuccessResponse<>(null);
     }
 
-    // 경매글 리스트 조회
-    @GetMapping("/search")
-    @Operation(summary = "경매 리스트 조회", description = "경매 리스트 조회")
-    public SuccessResponse<SearchAllAuctionPostResponseVo> searchAllAuctionPost (
+    // 인플루언서 이름 검색(경매글 상태와 무관)
+    @GetMapping("/search/influencer")
+    @Operation(summary = "인플루언서 이름을 통한 경매글 리스트 조회", description = "인플루언서 이름을 통한 경매글 리스트 조회")
+    public SuccessResponse<SearchAllAuctionPostResponseVo> searchAllAuctionPostByInfluencerName (
             @RequestHeader(required = false) String uuid,
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String influencerName,
-            @RequestParam(required = false) AuctionStateEnum auctionState,
-            @RequestParam(required = false) String localName,
+            @RequestParam String influencerName,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
-                        .uuid(uuid).title(title).influencerName(influencerName).auctionState(auctionState)
-                        .localName(localName).page(page).size(size).build()));
+                .uuid(uuid).influencerName(influencerName).auctionState(AuctionPostFilteringEnum.ALL_AUCTION)
+                .page(page).size(size).build()));
+    }
+
+    // 지역 검색(경매글 상태와 무관)
+    @GetMapping("/search/local")
+    @Operation(summary = "지역을 통한 경매글 리스트 조회", description = "지역을 통한 경매글 리스트 조회")
+    public SuccessResponse<SearchAllAuctionPostResponseVo> searchAllAuctionPostByLocalName (
+            @RequestHeader(required = false) String uuid,
+            @RequestParam String localName,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
+                .uuid(uuid).localName(localName).auctionState(AuctionPostFilteringEnum.ALL_AUCTION)
+                .page(page).size(size).build()));
+    }
+
+    // 제목 검색(경매글 상태와 무관)
+    @GetMapping("/search/title")
+    @Operation(summary = "제목을 통한 경매글 리스트 조회", description = "제목을 통한 경매글 리스트 조회")
+    public SuccessResponse<SearchAllAuctionPostResponseVo> searchAllAuctionPostByTitle (
+            @RequestHeader(required = false) String uuid,
+            @RequestParam String title,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
+                .uuid(uuid).title(title).auctionState(AuctionPostFilteringEnum.ALL_AUCTION)
+                .page(page).size(size).build()));
+    }
+
+    // 경매 상태에 따른 검색
+    @GetMapping("/search/state")
+    @Operation(summary = "상태를 통한 경매글 리스트 조회", description = "상태를 통한 경매글 리스트 조회")
+    public SuccessResponse<SearchAllAuctionPostResponseVo> searchAllAuctionPostByState (
+            @RequestHeader(required = false) String uuid,
+            @RequestParam(required = false) AuctionPostFilteringEnum state,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
+                .uuid(uuid).auctionState(state)
+                .page(page).size(size).build()));
     }
 
     // 경매글 상세조회

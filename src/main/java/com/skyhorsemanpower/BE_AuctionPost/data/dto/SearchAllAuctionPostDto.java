@@ -1,5 +1,6 @@
 package com.skyhorsemanpower.BE_AuctionPost.data.dto;
 
+import com.skyhorsemanpower.BE_AuctionPost.status.AuctionPostFilteringEnum;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ public class SearchAllAuctionPostDto {
     private String uuid;
     private String title;
     private String influencerName;
-    private AuctionStateEnum auctionState;
+    private AuctionPostFilteringEnum auctionState;
     private String localName;
     private Integer page;
     private Integer size;
