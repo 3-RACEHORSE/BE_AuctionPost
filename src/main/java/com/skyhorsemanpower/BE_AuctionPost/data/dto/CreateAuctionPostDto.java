@@ -35,8 +35,8 @@ public class CreateAuctionPostDto {
     public CreateAuctionPostDto(String adminUuid, String influencerUuid, String influencerName, String title,
                                 String content, int numberOfEventParticipants, String localName, String eventPlace,
                                 LocalDateTime eventStartTime, LocalDateTime eventCloseTime,
-                                LocalDateTime auctionStartTime, BigDecimal startPrice, BigDecimal incrementUnit,
-                                String thumbnail, List<String> images, String auctionUuid) {
+                                LocalDateTime auctionStartTime, BigDecimal startPrice,
+                                BigDecimal incrementUnit, String thumbnail, List<String> images, String auctionUuid) {
         this.adminUuid = adminUuid;
         this.influencerUuid = influencerUuid;
         this.influencerName = influencerName;
