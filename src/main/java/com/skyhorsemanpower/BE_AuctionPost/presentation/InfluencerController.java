@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,5 +53,12 @@ public class InfluencerController {
 			.collect(Collectors.toList());
 
 		return new SuccessResponse<>(influencers);
+	}
+
+	@DeleteMapping("/delete")
+	public SuccessResponse<Object> deleteInfluencer(
+		@RequestParam("influencerId") String influencerUuid) {
+		influencerService.removeInfluencer(influencerUuid);
+		return new SuccessResponse<>(null);
 	}
 }

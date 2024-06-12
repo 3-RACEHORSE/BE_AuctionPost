@@ -71,6 +71,7 @@ public class InfluencerServiceImpl implements InfluencerService {
 	}
 
 	@Override
+	@Transactional
 	public void updateInfluencer(InfluencerUpdateRequestDto influencerUpdateRequestDto) {
 		Influencer influencer = influencerRepository.findByUuid(
 				influencerUpdateRequestDto.getInfluencerUuid())
@@ -88,8 +89,12 @@ public class InfluencerServiceImpl implements InfluencerService {
 	}
 
 	@Override
+	@Transactional
 	public void removeInfluencer(String influencerUuid) {
+		Influencer influencer = influencerRepository.findByUuid(influencerUuid)
+			.orElseThrow(() -> new CustomException(ResponseStatus.NON_EXISTENT_INFLUENCER));
 
+		influencerRepository.delete(influencer);
 	}
 
 	@Override
