@@ -20,7 +20,6 @@ public class CreateAuctionPostRequestVo {
     private LocalDateTime eventStartTime;
     private LocalDateTime eventCloseTime;
     private LocalDateTime auctionStartTime;
-    private LocalDateTime auctionEndTime;
     private BigDecimal startPrice;
     private BigDecimal incrementUnit;
 
