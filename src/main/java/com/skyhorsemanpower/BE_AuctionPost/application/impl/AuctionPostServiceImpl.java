@@ -13,10 +13,7 @@ import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read.ReadAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.repository.AuctionImagesRepository;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.CommandAuctionPostRepository;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.read.ReadAuctionPostRepository;
-import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
-import com.skyhorsemanpower.BE_AuctionPost.status.PageState;
-import com.skyhorsemanpower.BE_AuctionPost.status.ResponseStatus;
-import com.skyhorsemanpower.BE_AuctionPost.status.TimeZoneChangeEnum;
+import com.skyhorsemanpower.BE_AuctionPost.status.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
@@ -64,7 +61,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
     public SearchAllAuctionPostResponseVo searchAllAuction(SearchAllAuctionPostDto searchAllAuctionDto) {
         // 입력 auctionState가 없는 경우는 모든 경매를 조회한다.
         if (searchAllAuctionDto.getAuctionState() == null)
-            searchAllAuctionDto.setAuctionState(AuctionStateEnum.ALL_AUCTION);
+            searchAllAuctionDto.setAuctionState(AuctionPostFilteringEnum.ALL_AUCTION);
 
         Integer page = searchAllAuctionDto.getPage();
         Integer size = searchAllAuctionDto.getSize();

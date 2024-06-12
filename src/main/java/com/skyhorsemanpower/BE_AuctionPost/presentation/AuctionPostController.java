@@ -8,6 +8,7 @@ import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.*;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.read.ReadAuctionPostRepository;
+import com.skyhorsemanpower.BE_AuctionPost.status.AuctionPostFilteringEnum;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
 import com.skyhorsemanpower.BE_AuctionPost.status.LocalNameEnum;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,7 +43,7 @@ public class AuctionPostController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
-                .uuid(uuid).influencerName(influencerName).auctionState(AuctionStateEnum.ALL_AUCTION)
+                .uuid(uuid).influencerName(influencerName).auctionState(AuctionPostFilteringEnum.ALL_AUCTION)
                 .page(page).size(size).build()));
     }
 
@@ -55,7 +56,7 @@ public class AuctionPostController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
-                .uuid(uuid).localName(localName).auctionState(AuctionStateEnum.ALL_AUCTION)
+                .uuid(uuid).localName(localName).auctionState(AuctionPostFilteringEnum.ALL_AUCTION)
                 .page(page).size(size).build()));
     }
 
@@ -68,16 +69,16 @@ public class AuctionPostController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
-                .uuid(uuid).title(title).auctionState(AuctionStateEnum.ALL_AUCTION)
+                .uuid(uuid).title(title).auctionState(AuctionPostFilteringEnum.ALL_AUCTION)
                 .page(page).size(size).build()));
     }
 
-    // 경매 상태에 따른 검색(경매글 상태와 무관)
-    @GetMapping("/search/state/{state}")
+    // 경매 상태에 따른 검색
+    @GetMapping({"/search/state", "/search/state/{state}"})
     @Operation(summary = "상태를 통한 경매글 리스트 조회", description = "상태를 통한 경매글 리스트 조회")
     public SuccessResponse<SearchAllAuctionPostResponseVo> searchAllAuctionPostByState (
             @RequestHeader(required = false) String uuid,
-            @PathVariable("state") AuctionStateEnum state,
+            @PathVariable(value = "state", required = false) AuctionPostFilteringEnum state,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
