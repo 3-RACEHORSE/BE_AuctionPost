@@ -16,6 +16,7 @@ import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.read.ReadAuctionPostR
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
 import com.skyhorsemanpower.BE_AuctionPost.status.PageState;
 import com.skyhorsemanpower.BE_AuctionPost.status.ResponseStatus;
+import com.skyhorsemanpower.BE_AuctionPost.status.TimeZoneChangeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
@@ -215,9 +216,12 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                             .numberOfEventParticipants(createAuctionPostDto.getNumberOfEventParticipants())
                             .localName(createAuctionPostDto.getLocalName())
                             .eventPlace(createAuctionPostDto.getEventPlace())
-                            .eventStartTime(createAuctionPostDto.getEventStartTime())
-                            .eventCloseTime(createAuctionPostDto.getEventCloseTime())
-                            .auctionStartTime(createAuctionPostDto.getAuctionStartTime())
+                            .eventStartTime(createAuctionPostDto.getEventStartTime()
+                                    .plusHours(TimeZoneChangeEnum.KOREA_TO_UTC.getTimeDiff()))
+                            .eventCloseTime(createAuctionPostDto.getEventCloseTime()
+                                    .plusHours(TimeZoneChangeEnum.KOREA_TO_UTC.getTimeDiff()))
+                            .auctionStartTime(createAuctionPostDto.getAuctionStartTime()
+                                    .plusHours(TimeZoneChangeEnum.KOREA_TO_UTC.getTimeDiff()))
                             .startPrice(createAuctionPostDto.getStartPrice())
                             .incrementUnit(createAuctionPostDto.getIncrementUnit())
                             .state(AuctionStateEnum.BEFORE_AUCTION)
@@ -270,9 +274,9 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                     .numberOfEventParticipants(createAuctionPostDto.getNumberOfEventParticipants())
                     .localName(createAuctionPostDto.getLocalName())
                     .eventPlace(createAuctionPostDto.getEventPlace())
-                    .eventStartTime(createAuctionPostDto.getEventStartTime())
-                    .eventCloseTime(createAuctionPostDto.getEventCloseTime())
-                    .auctionStartTime(createAuctionPostDto.getAuctionStartTime())
+                    .eventStartTime(createAuctionPostDto.getEventStartTime().minusHours(9))
+                    .eventCloseTime(createAuctionPostDto.getEventCloseTime().minusHours(9))
+                    .auctionStartTime(createAuctionPostDto.getAuctionStartTime().minusHours(9))
                     .startPrice(createAuctionPostDto.getStartPrice())
                     .incrementUnit(createAuctionPostDto.getIncrementUnit())
                     .state(AuctionStateEnum.BEFORE_AUCTION)
