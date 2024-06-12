@@ -13,6 +13,7 @@ import lombok.Setter;
 @Builder
 public class InfluencerUpdateRequestDto {
 
+	private String influencerUuid;
 	private String name;
 	private String phoneNum;
 	private String profileImage;

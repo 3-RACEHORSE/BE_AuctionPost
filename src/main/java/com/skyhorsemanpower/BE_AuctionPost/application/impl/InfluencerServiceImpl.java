@@ -4,10 +4,12 @@ import com.skyhorsemanpower.BE_AuctionPost.application.InfluencerService;
 import com.skyhorsemanpower.BE_AuctionPost.common.CustomException;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerAddRequestDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerDetailResponseDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerSearchResponseDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerUpdateRequestDto;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.command.Influencer;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.InfluencerRepository;
 import com.skyhorsemanpower.BE_AuctionPost.status.ResponseStatus;
+import java.util.List;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class InfluencerServiceImpl implements InfluencerService {
 
-	private InfluencerRepository influencerRepository;
+	private final InfluencerRepository influencerRepository;
 
 	//uuid생성
 	private String createUuid() {
@@ -70,11 +72,38 @@ public class InfluencerServiceImpl implements InfluencerService {
 
 	@Override
 	public void updateInfluencer(InfluencerUpdateRequestDto influencerUpdateRequestDto) {
+		Influencer influencer = influencerRepository.findByUuid(
+				influencerUpdateRequestDto.getInfluencerUuid())
+			.orElseThrow(() -> new CustomException(ResponseStatus.NON_EXISTENT_INFLUENCER));
 
+		influencerRepository.save(Influencer.builder()
+			.id(influencer.getId())
+			.uuid(influencer.getUuid())
+			.name(influencerUpdateRequestDto.getName())
+			.phoneNum(influencerUpdateRequestDto.getPhoneNum())
+			.profileImage(influencerUpdateRequestDto.getProfileImage())
+			.description(influencerUpdateRequestDto.getDescription())
+			.build()
+		);
 	}
 
 	@Override
 	public void removeInfluencer(String influencerUuid) {
 
+	}
+
+	@Override
+	public List<InfluencerSearchResponseDto> searchInfluencer(String name) {
+		List<Influencer> influencers = influencerRepository.findByNameContaining(name);
+		if (influencers == null) {
+			throw new CustomException(ResponseStatus.NON_EXISTENT_INFLUENCER);
+		}
+		return influencers.stream()
+			.map(influencer -> InfluencerSearchResponseDto.builder()
+				.influencerUuid(influencer.getUuid())
+				.name(influencer.getName())
+				.profileImage(influencer.getProfileImage())
+				.build())
+			.toList();
 	}
 }
