@@ -175,6 +175,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                     .eventStartTime(readAuctionPost.getEventStartTime())
                     .eventCloseTime(readAuctionPost.getEventCloseTime())
                     .auctionStartTime(readAuctionPost.getAuctionStartTime())
+                    .auctionEndTime(readAuctionPost.getAuctionEndTime())
                     .startPrice(readAuctionPost.getStartPrice())
                     .totalDonation(readAuctionPost.getTotalDonation())
                     .thumbnail(thumbnail)
