@@ -25,6 +25,7 @@ public class CreateAuctionPostDto {
     private LocalDateTime eventStartTime;
     private LocalDateTime eventCloseTime;
     private LocalDateTime auctionStartTime;
+    private LocalDateTime auctionEndTime;
     private BigDecimal startPrice;
     private BigDecimal incrementUnit;
     private String thumbnail;
@@ -35,8 +36,8 @@ public class CreateAuctionPostDto {
     public CreateAuctionPostDto(String adminUuid, String influencerUuid, String influencerName, String title,
                                 String content, int numberOfEventParticipants, String localName, String eventPlace,
                                 LocalDateTime eventStartTime, LocalDateTime eventCloseTime,
-                                LocalDateTime auctionStartTime, BigDecimal startPrice, BigDecimal incrementUnit,
-                                String thumbnail, List<String> images, String auctionUuid) {
+                                LocalDateTime auctionStartTime, LocalDateTime auctionEndTime, BigDecimal startPrice,
+                                BigDecimal incrementUnit, String thumbnail, List<String> images, String auctionUuid) {
         this.adminUuid = adminUuid;
         this.influencerUuid = influencerUuid;
         this.influencerName = influencerName;
@@ -48,6 +49,7 @@ public class CreateAuctionPostDto {
         this.eventStartTime = eventStartTime;
         this.eventCloseTime = eventCloseTime;
         this.auctionStartTime = auctionStartTime;
+        this.auctionEndTime = auctionEndTime;
         this.startPrice = startPrice;
         this.incrementUnit = incrementUnit;
         this.thumbnail = thumbnail;
@@ -70,6 +72,7 @@ public class CreateAuctionPostDto {
                 .eventStartTime(createAuctionPostRequestVo.getEventStartTime())
                 .eventCloseTime(createAuctionPostRequestVo.getEventCloseTime())
                 .auctionStartTime(createAuctionPostRequestVo.getAuctionStartTime())
+                .auctionEndTime(createAuctionPostRequestVo.getAuctionEndTime())
                 .startPrice(createAuctionPostRequestVo.getStartPrice())
                 .incrementUnit(createAuctionPostRequestVo.getIncrementUnit())
                 .thumbnail(createAuctionPostRequestVo.getThumbnail())

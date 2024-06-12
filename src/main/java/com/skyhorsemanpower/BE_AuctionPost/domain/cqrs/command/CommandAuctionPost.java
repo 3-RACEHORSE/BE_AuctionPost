@@ -4,6 +4,7 @@ import com.skyhorsemanpower.BE_AuctionPost.common.BaseCreateAndEndTimeEntity;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.cglib.core.Local;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -56,6 +57,9 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
     @Column(nullable = false, length = 30)
     private LocalDateTime auctionStartTime;
 
+    @Column(nullable = false, length = 30)
+    private LocalDateTime auctionEndTime;
+
     @Column(nullable = false, precision = 20, scale = 2)
     private BigDecimal startPrice;
 
@@ -74,8 +78,9 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
     public CommandAuctionPost(long auctionPostId, String auctionUuid, String adminUuid, String influencerUuid,
                               String influencerName, String title, String content, int numberOfEventParticipants,
                               String localName, String eventPlace, LocalDateTime eventStartTime,
-                              LocalDateTime eventCloseTime, LocalDateTime auctionStartTime, BigDecimal startPrice,
-                              BigDecimal incrementUnit, BigDecimal totalDonation, AuctionStateEnum state) {
+                              LocalDateTime auctionEndTime, LocalDateTime eventCloseTime,
+                              LocalDateTime auctionStartTime, BigDecimal startPrice, BigDecimal incrementUnit,
+                              BigDecimal totalDonation, AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
         this.adminUuid = adminUuid;
@@ -89,6 +94,7 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
         this.eventStartTime = eventStartTime;
         this.eventCloseTime = eventCloseTime;
         this.auctionStartTime = auctionStartTime;
+        this.auctionEndTime = auctionEndTime;
         this.startPrice = startPrice;
         this.incrementUnit = incrementUnit;
         this.totalDonation = totalDonation;
