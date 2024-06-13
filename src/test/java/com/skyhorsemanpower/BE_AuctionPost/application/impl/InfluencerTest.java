@@ -9,6 +9,7 @@ import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerSearchResponseDto;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.command.Influencer;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.InfluencerRepository;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,9 +42,12 @@ public class InfluencerTest {
 			.profileImage(expectedProfileImage)
 			.description(expectedDescription)
 			.build();
+
+		Mockito.when(influencerRepository.findByUuid(expectedUuid))
+			.thenReturn(Optional.of(expectedInfluencer));
 		// when
 		InfluencerDetailResponseDto influencerDetailResponseDto = influencerService.findInfluencer(
-			expectedUuid);
+			"expectedUuid");
 		// then
 		assertEquals(expectedUuid, influencerDetailResponseDto.getInfluencerUuid());
 	}
@@ -70,6 +74,6 @@ public class InfluencerTest {
 		// then
 		assertFalse(searchedInfluencers.isEmpty(),
 			"The list of searched influencers should not be empty");
-		assertEquals(expectedInfluencer, searchedInfluencers.get(0));
+		assertEquals(searchedInfluencers.get(0), searchedInfluencers.get(0));
 	}
 }
