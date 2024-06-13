@@ -42,7 +42,10 @@ public enum ResponseStatus {
     // 이미 등록된 인플루언서인 경우
     ALREADY_REGISTERED_INFLUENCER(400, "이미 등록된 인플루언서입니다."),
     // 존재하지 않는 인플루언서인 경우
-    NON_EXISTENT_INFLUENCER(400, "존재하지 않는 인플루언서입니다.");
+    NON_EXISTENT_INFLUENCER(400, "존재하지 않는 인플루언서입니다."),
+    // 은행 점검 중인 경우
+    BANK_CHECK_TIME(404, "은행 점검 중인 시간입니다.")
+    ;
 
     private final int code;
     private final String message;
