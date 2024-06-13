@@ -2,10 +2,7 @@ package com.skyhorsemanpower.BE_AuctionPost.presentation;
 
 import com.skyhorsemanpower.BE_AuctionPost.application.AuctionPostService;
 import com.skyhorsemanpower.BE_AuctionPost.common.SuccessResponse;
-import com.skyhorsemanpower.BE_AuctionPost.data.dto.CreateAuctionPostDto;
-import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerAllAuctionPostDto;
-import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionPostDto;
-import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.*;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.*;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.read.ReadAuctionPostRepository;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionPostFilteringEnum;
@@ -34,17 +31,14 @@ public class AuctionPostController {
         return new SuccessResponse<>(null);
     }
 
-    // 인플루언서 이름 검색(경매글 상태와 무관)
-    @GetMapping("/search/influencer")
-    @Operation(summary = "인플루언서 이름을 통한 경매글 리스트 조회", description = "인플루언서 이름을 통한 경매글 리스트 조회")
-    public SuccessResponse<SearchAllAuctionPostResponseVo> searchAllAuctionPostByInfluencerName (
+    // 인플루언서 이름과 제목을 통한 경매글 제목 리스트 반환
+    @GetMapping("/search-title")
+    @Operation(summary = "인플루언서 이름과 제목을 통한 경매글 리스트 조회", description = "인플루언서 이름과 제목을 통한 경매글 리스트 조회")
+    public SuccessResponse<SearchAuctionPostTitleAndInfluencerNameResponseVo> searchAuctionPostTitleAndInfluencerName (
             @RequestHeader(required = false) String uuid,
-            @RequestParam String influencerName,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size) {
-        return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
-                .uuid(uuid).influencerName(influencerName).auctionState(AuctionPostFilteringEnum.ALL_AUCTION)
-                .page(page).size(size).build()));
+            @RequestParam String data) {
+        return new SuccessResponse<>(readAuctionPostRepository.getAuctionPostTitleAndInfluencerName(
+                SearchAuctionPostTitleDto.builder().data(data).build()));
     }
 
     // 지역 검색(경매글 상태와 무관)
@@ -57,19 +51,6 @@ public class AuctionPostController {
             @RequestParam(required = false) Integer size) {
         return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
                 .uuid(uuid).localName(localName).auctionState(AuctionPostFilteringEnum.ALL_AUCTION)
-                .page(page).size(size).build()));
-    }
-
-    // 제목 검색(경매글 상태와 무관)
-    @GetMapping("/search/title")
-    @Operation(summary = "제목을 통한 경매글 리스트 조회", description = "제목을 통한 경매글 리스트 조회")
-    public SuccessResponse<SearchAllAuctionPostResponseVo> searchAllAuctionPostByTitle (
-            @RequestHeader(required = false) String uuid,
-            @RequestParam String title,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size) {
-        return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
-                .uuid(uuid).title(title).auctionState(AuctionPostFilteringEnum.ALL_AUCTION)
                 .page(page).size(size).build()));
     }
 
