@@ -38,8 +38,11 @@ public enum ResponseStatus {
     EXCEPTION_TEST(500, "예외 테스트"),
 
     // 조건문이 비어있는 경우
-    BLANK_CRITERIA(400, "조건문이 비어있습니다.")
-    ;
+    BLANK_CRITERIA(400, "조건문이 비어있습니다."),
+    // 이미 등록된 인플루언서인 경우
+    ALREADY_REGISTERED_INFLUENCER(400, "이미 등록된 인플루언서입니다."),
+    // 존재하지 않는 인플루언서인 경우
+    NON_EXISTENT_INFLUENCER(400, "존재하지 않는 인플루언서입니다.");
 
     private final int code;
     private final String message;

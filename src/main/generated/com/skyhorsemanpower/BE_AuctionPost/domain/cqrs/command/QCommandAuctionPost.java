@@ -23,6 +23,8 @@ public class QCommandAuctionPost extends EntityPathBase<CommandAuctionPost> {
 
     public final StringPath adminUuid = createString("adminUuid");
 
+    public final DateTimePath<java.time.LocalDateTime> auctionEndTime = createDateTime("auctionEndTime", java.time.LocalDateTime.class);
+
     public final NumberPath<Long> auctionPostId = createNumber("auctionPostId", Long.class);
 
     public final DateTimePath<java.time.LocalDateTime> auctionStartTime = createDateTime("auctionStartTime", java.time.LocalDateTime.class);

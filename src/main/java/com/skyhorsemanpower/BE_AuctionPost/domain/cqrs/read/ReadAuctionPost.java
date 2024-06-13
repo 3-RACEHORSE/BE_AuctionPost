@@ -35,6 +35,7 @@ public class ReadAuctionPost {
     private LocalDateTime eventStartTime;
     private LocalDateTime eventCloseTime;
     private LocalDateTime auctionStartTime;
+    private LocalDateTime auctionEndTime;
     private BigDecimal startPrice;
     private BigDecimal incrementUnit;
     private BigDecimal totalDonation;
@@ -46,8 +47,9 @@ public class ReadAuctionPost {
     public ReadAuctionPost(String auctionPostId, String auctionUuid, String adminUuid, String influencerUuid,
                            String influencerName, String title, String content, int numberOfEventParticipants,
                            String localName, String eventPlace, LocalDateTime eventStartTime,
-                           LocalDateTime eventCloseTime, LocalDateTime auctionStartTime, BigDecimal startPrice,
-                           BigDecimal incrementUnit, BigDecimal totalDonation,  AuctionStateEnum state) {
+                           LocalDateTime auctionEndTime, LocalDateTime eventCloseTime, LocalDateTime auctionStartTime,
+                           BigDecimal startPrice, BigDecimal incrementUnit, BigDecimal totalDonation,
+                           AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
         this.adminUuid = adminUuid;
@@ -61,6 +63,7 @@ public class ReadAuctionPost {
         this.eventStartTime = eventStartTime;
         this.eventCloseTime = eventCloseTime;
         this.auctionStartTime = auctionStartTime;
+        this.auctionEndTime = auctionEndTime;
         this.startPrice = startPrice;
         this.incrementUnit = incrementUnit;
         this.totalDonation = totalDonation;
