@@ -38,32 +38,37 @@ public class CustomReadAuctionPostRepositoryImpl implements CustomReadAuctionPos
         Criteria criteria = new Criteria();
         boolean hasCriteria = false;
 
-        if (searchAllAuctionDto.getAuctionState() != null) {
+        // 입력값에 따른 경매글 리스트 조회
+        if (searchAllAuctionDto.getSearchContent() != null) {
+            criteria.orOperator(
+                    Criteria.where("title").regex(searchAllAuctionDto.getSearchContent(), "i"),
+                    Criteria.where("influencerName").regex(searchAllAuctionDto.getSearchContent(), "i")
+            );
+            hasCriteria = true;
+        }
 
-            // 모든 경매글 검색
-            if (searchAllAuctionDto.getAuctionState().equals(AuctionPostFilteringEnum.ALL_AUCTION)) {
-                // ne는 not equal 이라는 의미
-                criteria.and("state").ne(null);
+        // 지역명과 경매 상태에 따른 경매글 리스트 조회
+        else {
+            if (searchAllAuctionDto.getAuctionState() != null) {
+
+                // 모든 경매글 검색
+                if (searchAllAuctionDto.getAuctionState().equals(AuctionPostFilteringEnum.ALL_AUCTION)) {
+                    // ne는 not equal 이라는 의미
+                    criteria.and("state").ne(null);
+                    hasCriteria = true;
+                }
+
+                // 특정 상태 경매글 검색
+                else {
+                    criteria.and("state").is(searchAllAuctionDto.getAuctionState());
+                    hasCriteria = true;
+                }
+            }
+            // 지역명 필터링
+            if (searchAllAuctionDto.getLocalName() != null) {
+                criteria.and("localName").regex(searchAllAuctionDto.getLocalName(), "i");
                 hasCriteria = true;
             }
-
-            // 특정 상태 경매글 검색
-            else {
-                criteria.and("state").is(searchAllAuctionDto.getAuctionState());
-                hasCriteria = true;
-            }
-        }
-        if (searchAllAuctionDto.getTitle() != null) {
-            criteria.and("title").regex(searchAllAuctionDto.getTitle(), "i");
-            hasCriteria = true;
-        }
-        if (searchAllAuctionDto.getLocalName() != null) {
-            criteria.and("localName").regex(searchAllAuctionDto.getLocalName(), "i");
-            hasCriteria = true;
-        }
-        if (searchAllAuctionDto.getInfluencerName() != null) {
-            criteria.and("influencerName").regex(searchAllAuctionDto.getInfluencerName(), "i");
-            hasCriteria = true;
         }
 
         log.info("findAllAuctionPost's hasCriteria >>> {}", hasCriteria);
@@ -71,7 +76,7 @@ public class CustomReadAuctionPostRepositoryImpl implements CustomReadAuctionPos
         // criteria가 비어있는 경우
         if(!hasCriteria) {
             log.info("criteria is blank");
-            throw new CustomException(ResponseStatus.NO_DATA);
+            throw new CustomException(ResponseStatus.BLANK_CRITERIA);
         }
 
         Query query = new Query(criteria).with(pageable)
