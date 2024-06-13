@@ -42,7 +42,7 @@ public class InfluencerController {
 			InfluencerDetailResponseDto.dtoToVo(influencerService.findInfluencer(influencerUuid)));
 	}
 
-	@GetMapping("/influencer/search")
+	@GetMapping("/search")
 	public SuccessResponse<List<InfluencerSearchResponseVo>> searchInfluencer(
 		@RequestParam("name") String name) {
 		List<InfluencerSearchResponseDto> influencerSearchResponseDtos = influencerService.searchInfluencer(
