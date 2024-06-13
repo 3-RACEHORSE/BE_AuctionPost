@@ -41,6 +41,15 @@ public class AuctionPostServiceImpl implements AuctionPostService {
     @Override
     @Transactional
     public void createAuctionPost(CreateAuctionPostDto createAuctionPostDto) {
+        // 경매 시작 시간 제한
+        if(createAuctionPostDto.getAuctionStartTime()
+                .toLocalTime()
+                .isAfter(AuctionLimitTimeEnum.BANK_CHECK.getTime())) {
+            log.info("Auction Start Time In Korea >>> {}", createAuctionPostDto.getAuctionStartTime().toLocalTime());
+
+            throw new CustomException(ResponseStatus.BANK_CHECK_TIME);
+        }
+
         // auctionUuid
         String auctionUuid = generateAuctionUuid();
         createAuctionPostDto.setAuctionUuid(auctionUuid);
