@@ -3,6 +3,8 @@ package com.skyhorsemanpower.BE_AuctionPost.repository.mongotemplate.impl;
 import com.skyhorsemanpower.BE_AuctionPost.common.CustomException;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerAllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionPostTitleDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionPostTitleAndInfluencerNameResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read.ReadAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.repository.mongotemplate.CustomReadAuctionPostRepository;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionPostFilteringEnum;
@@ -11,7 +13,6 @@ import com.skyhorsemanpower.BE_AuctionPost.status.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -20,6 +21,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -131,5 +133,57 @@ public class CustomReadAuctionPostRepositoryImpl implements CustomReadAuctionPos
         Query query = new Query(Criteria.where("auctionUuid").is(auctionUuid));
         Update update = new Update().set("state", state);
         mongoTemplate.updateFirst(query, update, ReadAuctionPost.class);
+    }
+
+    @Override
+    public SearchAuctionPostTitleAndInfluencerNameResponseVo getAuctionPostTitleAndInfluencerName(SearchAuctionPostTitleDto searchAuctionPostTitleDto) {
+        log.info("SearchAuctionPostTitleDto >>> {}", searchAuctionPostTitleDto.toString());
+
+        String searchData = searchAuctionPostTitleDto.getData();
+        List<String> result = new ArrayList<>();
+        Criteria criteria = new Criteria();
+
+        // 인플루언서 검색
+        criteria.and("influencerName").regex(searchData, "i");
+
+        Query query = new Query(criteria);
+
+        // 필요한 필드만 선택
+        query.fields().include("influencerName");
+
+        // 1개 제한
+        query.limit(1);
+
+        log.info("Qeury >>> {}", query);
+
+        List<ReadAuctionPost> readAuctionPosts = mongoTemplate.find(query, ReadAuctionPost.class);
+
+        for(ReadAuctionPost readAuctionPost : readAuctionPosts) {
+            log.info("readAuctionPost >>> {}", readAuctionPost.toString());
+            result.add(readAuctionPost.getInfluencerName());
+        }
+
+        // 경매 제목 검색
+        criteria = new Criteria();
+        criteria.and("title").regex(searchData, "i");
+
+        query = new Query(criteria);
+
+        query.fields().include("title");
+
+        // 9개 제한
+        query.limit(9);
+
+        log.info("Qeury >>> {}", query);
+
+        readAuctionPosts = mongoTemplate.find(query, ReadAuctionPost.class);
+
+        for(ReadAuctionPost readAuctionPost : readAuctionPosts) {
+            log.info("readAuctionPost >>> {}", readAuctionPost.toString());
+            result.add(readAuctionPost.getTitle());
+        }
+
+        return SearchAuctionPostTitleAndInfluencerNameResponseVo.builder()
+                .result(result).build();
     }
 }
