@@ -19,4 +19,5 @@ public class SearchAllAuctionPostDto {
     private String localName;
     private Integer page;
     private Integer size;
+    private String searchContent;
 }

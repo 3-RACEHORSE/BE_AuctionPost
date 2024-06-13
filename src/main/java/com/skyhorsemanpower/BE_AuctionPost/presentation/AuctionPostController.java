@@ -31,15 +31,29 @@ public class AuctionPostController {
         return new SuccessResponse<>(null);
     }
 
-    // 인플루언서 이름과 제목을 통한 경매글 제목 리스트 반환
+    // 입력값을 통한 인플루언서 이름 및 경매글 제목 리스트 반환
     @GetMapping("/search-title")
-    @Operation(summary = "인플루언서 이름과 제목을 통한 경매글 리스트 조회", description = "인플루언서 이름과 제목을 통한 경매글 리스트 조회")
+    @Operation(summary = "인플루언서 이름 및 경매글 제목 리스트 조회", description = "인플루언서 이름 및 경매글 제목 리스트 조회")
     public SuccessResponse<SearchAuctionPostTitleAndInfluencerNameResponseVo> searchAuctionPostTitleAndInfluencerName (
             @RequestHeader(required = false) String uuid,
             @RequestParam String data) {
         return new SuccessResponse<>(readAuctionPostRepository.getAuctionPostTitleAndInfluencerName(
                 SearchAuctionPostTitleDto.builder().data(data).build()));
     }
+
+    // 입력값을 통한 경매글 리스트 반환
+    @GetMapping("/search/searchList")
+    @Operation(summary = "입력값을 통한 경매글 리스트 조회", description = "입력값을 통한 경매글 리스트 조회")
+    public SuccessResponse<SearchAllAuctionPostResponseVo> searchAllAuctionPostByInput (
+            @RequestHeader(required = false) String uuid,
+            @RequestParam(required = false) String searchContent,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return new SuccessResponse<>(auctionPostService.searchAllAuction(SearchAllAuctionPostDto.builder()
+                .uuid(uuid).searchContent(searchContent).auctionState(AuctionPostFilteringEnum.ALL_AUCTION)
+                .page(page).size(size).build()));
+    }
+
 
     // 지역 검색(경매글 상태와 무관)
     @GetMapping("/search/local")
