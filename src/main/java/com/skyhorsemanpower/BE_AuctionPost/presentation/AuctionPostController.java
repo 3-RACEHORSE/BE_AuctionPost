@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "경매글 서비스", description = "경매글 서비스 API")
 @RequestMapping("/api/v1/auction-post")
+@CrossOrigin(value = "*")
 public class AuctionPostController {
     private final AuctionPostService auctionPostService;
     private final ReadAuctionPostRepository readAuctionPostRepository;
