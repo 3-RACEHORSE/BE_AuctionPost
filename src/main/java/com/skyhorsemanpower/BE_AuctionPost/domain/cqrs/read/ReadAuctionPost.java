@@ -47,11 +47,11 @@ public class ReadAuctionPost {
     @Field(name = "auction_end_time")
     private long auctionEndTime;
     @Field(name = "start_price")
-    private BigDecimal startPrice;
+    private String startPrice;
     @Field(name = "increment_unit")
-    private BigDecimal incrementUnit;
+    private String incrementUnit;
     @Field(name = "total_donation")
-    private BigDecimal totalDonation;
+    private String totalDonation;
     @Field(name = "state")
     private AuctionStateEnum state;
     @Field(name = "created_at")
@@ -65,7 +65,7 @@ public class ReadAuctionPost {
         String influencerName, String title, String content, int numberOfEventParticipants,
         String localName, String eventPlace, long eventStartTime,
         long auctionEndTime, long eventCloseTime, long auctionStartTime,
-        BigDecimal startPrice, BigDecimal incrementUnit, BigDecimal totalDonation,
+        String startPrice, String incrementUnit, String totalDonation,
         AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
