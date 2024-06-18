@@ -1,18 +1,15 @@
 package com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read;
 
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import java.math.BigDecimal;
+import java.time.Instant;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @NoArgsConstructor
 @Getter
@@ -21,35 +18,55 @@ import java.time.LocalDateTime;
 public class ReadAuctionPost {
 
     @Id
+    @Field(name = "auction_post_id")
     private String auctionPostId;
-
+    @Field(name = "auction_uuid")
     private String auctionUuid;
+    @Field(name = "admin_uuid")
     private String adminUuid;
+    @Field(name = "influencer_uuid")
     private String influencerUuid;
+    @Field(name = "influencer_name")
     private String influencerName;
+    @Field(name = "title")
     private String title;
+    @Field(name = "content")
     private String content;
+    @Field(name = "number_of_event_participants")
     private int numberOfEventParticipants;
+    @Field(name = "local_name")
     private String localName;
+    @Field(name = "event_place")
     private String eventPlace;
-    private LocalDateTime eventStartTime;
-    private LocalDateTime eventCloseTime;
-    private LocalDateTime auctionStartTime;
-    private LocalDateTime auctionEndTime;
+    @Field(name = "event_start_time")
+    private long eventStartTime;
+    @Field(name = "event_close_time")
+    private long eventCloseTime;
+    @Field(name = "auction_start_time")
+    private long auctionStartTime;
+    @Field(name = "auction_end_time")
+    private long auctionEndTime;
+    @Field(name = "start_price")
     private BigDecimal startPrice;
+    @Field(name = "increment_unit")
     private BigDecimal incrementUnit;
+    @Field(name = "total_donation")
     private BigDecimal totalDonation;
+    @Field(name = "state")
     private AuctionStateEnum state;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @Field(name = "created_at")
+    private long createdAt;
+    @Field(name = "updated_at")
+    private long updatedAt;
 
     @Builder
-    public ReadAuctionPost(String auctionPostId, String auctionUuid, String adminUuid, String influencerUuid,
-                           String influencerName, String title, String content, int numberOfEventParticipants,
-                           String localName, String eventPlace, LocalDateTime eventStartTime,
-                           LocalDateTime auctionEndTime, LocalDateTime eventCloseTime, LocalDateTime auctionStartTime,
-                           BigDecimal startPrice, BigDecimal incrementUnit, BigDecimal totalDonation,
-                           AuctionStateEnum state) {
+    public ReadAuctionPost(String auctionPostId, String auctionUuid, String adminUuid,
+        String influencerUuid,
+        String influencerName, String title, String content, int numberOfEventParticipants,
+        String localName, String eventPlace, long eventStartTime,
+        long auctionEndTime, long eventCloseTime, long auctionStartTime,
+        BigDecimal startPrice, BigDecimal incrementUnit, BigDecimal totalDonation,
+        AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
         this.adminUuid = adminUuid;
@@ -68,7 +85,7 @@ public class ReadAuctionPost {
         this.incrementUnit = incrementUnit;
         this.totalDonation = totalDonation;
         this.state = state;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdAt = Instant.now().toEpochMilli();
+        this.updatedAt = Instant.now().toEpochMilli();
     }
 }
