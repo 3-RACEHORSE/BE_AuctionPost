@@ -2,8 +2,14 @@ package com.skyhorsemanpower.BE_AuctionPost.application.impl;
 
 import com.skyhorsemanpower.BE_AuctionPost.application.AuctionPostService;
 import com.skyhorsemanpower.BE_AuctionPost.common.CustomException;
+import com.skyhorsemanpower.BE_AuctionPost.common.DateTimeConverter;
 import com.skyhorsemanpower.BE_AuctionPost.config.QuartzConfig;
-import com.skyhorsemanpower.BE_AuctionPost.data.dto.*;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.AllAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.AuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.CreateAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerAllAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionResponseVo;
@@ -13,7 +19,20 @@ import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read.ReadAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.repository.AuctionImagesRepository;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.CommandAuctionPostRepository;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.read.ReadAuctionPostRepository;
-import com.skyhorsemanpower.BE_AuctionPost.status.*;
+import com.skyhorsemanpower.BE_AuctionPost.status.AuctionEndTimeState;
+import com.skyhorsemanpower.BE_AuctionPost.status.AuctionLimitTimeEnum;
+import com.skyhorsemanpower.BE_AuctionPost.status.AuctionPostFilteringEnum;
+import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
+import com.skyhorsemanpower.BE_AuctionPost.status.PageState;
+import com.skyhorsemanpower.BE_AuctionPost.status.ResponseStatus;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
@@ -22,17 +41,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AuctionPostServiceImpl implements AuctionPostService {
+
     private final CommandAuctionPostRepository commandAuctionPostRepository;
     private final ReadAuctionPostRepository readAuctionPostRepository;
     private final AuctionImagesRepository auctionImagesRepository;
@@ -42,10 +55,11 @@ public class AuctionPostServiceImpl implements AuctionPostService {
     @Transactional
     public void createAuctionPost(CreateAuctionPostDto createAuctionPostDto) {
         // 경매 시작 시간 제한
-        if(createAuctionPostDto.getAuctionStartTime()
-                .toLocalTime()
-                .isAfter(AuctionLimitTimeEnum.BANK_CHECK.getTime())) {
-            log.info("Auction Start Time In Korea >>> {}", createAuctionPostDto.getAuctionStartTime().toLocalTime());
+        if (DateTimeConverter.instantToLocalDateTime(createAuctionPostDto.getAuctionStartTime())
+            .toLocalTime()
+            .isAfter(AuctionLimitTimeEnum.BANK_CHECK.getTime())) {
+            log.info("Auction Start Time (Timestamp) >>> {}",
+                createAuctionPostDto.getAuctionStartTime());
 
             throw new CustomException(ResponseStatus.BANK_CHECK_TIME);
         }
@@ -55,11 +69,8 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         createAuctionPostDto.setAuctionUuid(auctionUuid);
 
         // PostgreSQL 저장
-        createCommandAutionPost(createAuctionPostDto);
+        createCommandAuctionPost(createAuctionPostDto);
         createAuctionImages(createAuctionPostDto);
-
-        // MongoDB 저장
-        createReadAuctionPost(createAuctionPostDto);
 
         // 스케줄러에 경매 마감 등록
         createScheduler(auctionUuid);
@@ -67,20 +78,26 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 
     @Override
     @Transactional
-    public SearchAllAuctionPostResponseVo searchAllAuction(SearchAllAuctionPostDto searchAllAuctionDto) {
+    public SearchAllAuctionPostResponseVo searchAllAuction(
+        SearchAllAuctionPostDto searchAllAuctionDto) {
         // 입력 auctionState가 없는 경우는 모든 경매를 조회한다.
-        if (searchAllAuctionDto.getAuctionState() == null)
+        if (searchAllAuctionDto.getAuctionState() == null) {
             searchAllAuctionDto.setAuctionState(AuctionPostFilteringEnum.ALL_AUCTION);
+        }
 
         Integer page = searchAllAuctionDto.getPage();
         Integer size = searchAllAuctionDto.getSize();
 
         // page, size 미지정 시, 기본값 할당
-        if (page == null || page < 0) page = PageState.DEFAULT.getPage();
-        if (size == null || size <= 0) size = PageState.DEFAULT.getSize();
+        if (page == null || page < 0) {
+            page = PageState.DEFAULT.getPage();
+        }
+        if (size == null || size <= 0) {
+            size = PageState.DEFAULT.getSize();
+        }
 
         Page<ReadAuctionPost> readAuctionPostPage = readAuctionPostRepository.findAllAuctionPost(
-                searchAllAuctionDto, PageRequest.of(page, size)
+            searchAllAuctionDto, PageRequest.of(page, size)
         );
 
         // 조회 없는 경우 예외 처리
@@ -96,66 +113,91 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 
         for (ReadAuctionPost readAuctionPost : auctionPosts) {
             String thumbnail = auctionImagesRepository.getThumbnailUrl(
-                    readAuctionPost.getAuctionUuid());
-
-            log.info("thumbnail >>> {}", thumbnail);
+                readAuctionPost.getAuctionUuid());
 
             auctionPostDtos.add(AuctionPostDto.builder()
-                    .auctionUuid(readAuctionPost.getAuctionUuid())
-                    .influencerUuid(readAuctionPost.getInfluencerUuid())
-                    .influencerName(readAuctionPost.getInfluencerName())
-                    .title(readAuctionPost.getTitle())
-                    .localName(readAuctionPost.getLocalName())
-                    .eventPlace(readAuctionPost.getEventPlace())
-                    .eventStartTime(readAuctionPost.getEventStartTime())
-                    .eventCloseTime(readAuctionPost.getEventCloseTime())
-                    .auctionStartTime(readAuctionPost.getAuctionStartTime())
-                    .auctionEndTime(readAuctionPost.getAuctionEndTime())
-                    .startPrice(readAuctionPost.getStartPrice())
-                    .totalDonation(readAuctionPost.getTotalDonation())
-                    .state(readAuctionPost.getState())
-                    .thumbnail(thumbnail)
-                    .incrementUnit(readAuctionPost.getIncrementUnit())
-                    .build());
+                .auctionUuid(readAuctionPost.getAuctionUuid())
+                .influencerUuid(readAuctionPost.getInfluencerUuid())
+                .influencerName(readAuctionPost.getInfluencerName())
+                .title(readAuctionPost.getTitle())
+                .localName(readAuctionPost.getLocalName())
+                .eventPlace(readAuctionPost.getEventPlace())
+                .eventStartTime(readAuctionPost.getEventStartTime())
+                .eventCloseTime(readAuctionPost.getEventCloseTime())
+                .auctionStartTime(readAuctionPost.getAuctionStartTime())
+                .auctionEndTime(readAuctionPost.getAuctionEndTime())
+                .startPrice(readAuctionPost.getStartPrice())
+                .totalDonation(readAuctionPost.getTotalDonation())
+                .state(readAuctionPost.getState())
+                .thumbnail(thumbnail)
+                .incrementUnit(readAuctionPost.getIncrementUnit())
+                .build());
         }
 
         boolean hasNext = readAuctionPostPage.hasNext();
 
         return SearchAllAuctionPostResponseVo.builder()
-                .auctionPostDtos(auctionPostDtos)
-                .currentPage(page)
-                .hasNext(hasNext)
-                .build();
+            .auctionPostDtos(auctionPostDtos)
+            .currentPage(page)
+            .hasNext(hasNext)
+            .build();
     }
 
     @Override
     public SearchAuctionResponseVo searchAuctionPost(SearchAuctionPostDto searchAuctionPostDto) {
         ReadAuctionPost readAuctionPost = readAuctionPostRepository.findByAuctionUuid(
-                searchAuctionPostDto.getAuctionUuid()).orElseThrow(
-                () -> new CustomException(ResponseStatus.NO_DATA)
+            searchAuctionPostDto.getAuctionUuid()).orElseThrow(
+            () -> new CustomException(ResponseStatus.NO_DATA)
         );
         return SearchAuctionResponseVo.builder()
-                .readAuctionPost(readAuctionPost)
-                .thumbnail(auctionImagesRepository.getThumbnailUrl(searchAuctionPostDto.getAuctionUuid()))
-                .images(auctionImagesRepository.getImagesUrl(searchAuctionPostDto.getAuctionUuid()))
-                .build();
+            .readAuctionPost(AllAuctionPostDto.builder()
+                .auctionPostId(readAuctionPost.getAuctionPostId())
+                .auctionUuid(readAuctionPost.getAuctionUuid())
+                .adminUuid(readAuctionPost.getAdminUuid())
+                .influencerUuid(readAuctionPost.getInfluencerUuid())
+                .title(readAuctionPost.getTitle())
+                .content(readAuctionPost.getContent())
+                .numberOfEventParticipants(readAuctionPost.getNumberOfEventParticipants())
+                .localName(readAuctionPost.getLocalName())
+                .eventPlace(readAuctionPost.getEventPlace())
+                .eventStartTime(readAuctionPost.getEventStartTime())
+                .eventCloseTime(readAuctionPost.getEventCloseTime())
+                .auctionStartTime(readAuctionPost.getAuctionStartTime())
+                .auctionEndTime(readAuctionPost.getAuctionEndTime())
+                .startPrice(readAuctionPost.getStartPrice())
+                .incrementUnit(readAuctionPost.getIncrementUnit())
+                .totalDonation(readAuctionPost.getTotalDonation())
+                .state(readAuctionPost.getState())
+                .createdAt(readAuctionPost.getCreatedAt())
+                .updatedAt(readAuctionPost.getUpdatedAt())
+                .build())
+            .thumbnail(
+                auctionImagesRepository.getThumbnailUrl(searchAuctionPostDto.getAuctionUuid()))
+            .images(auctionImagesRepository.getImagesUrl(searchAuctionPostDto.getAuctionUuid()))
+            .build();
     }
 
     @Override
-    public InfluencerAllAuctionPostResponseVo influencerAuctionPost(InfluencerAllAuctionPostDto influencerAllAuctionPostDto) {
+    public InfluencerAllAuctionPostResponseVo influencerAuctionPost(
+        InfluencerAllAuctionPostDto influencerAllAuctionPostDto) {
         // 입력 auctionState가 없는 경우는 진행 중인 것으로 판단한다.
-        if (influencerAllAuctionPostDto.getAuctionState() == null)
+        if (influencerAllAuctionPostDto.getAuctionState() == null) {
             influencerAllAuctionPostDto.setAuctionState(AuctionStateEnum.AUCTION_IS_IN_PROGRESS);
+        }
 
         Integer page = influencerAllAuctionPostDto.getPage();
         Integer size = influencerAllAuctionPostDto.getSize();
 
         // page, size 미지정 시, 기본값 할당
-        if (page == null || page < 0) page = PageState.DEFAULT.getPage();
-        if (size == null || size <= 0) size = PageState.DEFAULT.getSize();
+        if (page == null || page < 0) {
+            page = PageState.DEFAULT.getPage();
+        }
+        if (size == null || size <= 0) {
+            size = PageState.DEFAULT.getSize();
+        }
 
         Page<ReadAuctionPost> readAuctionPostPage = readAuctionPostRepository.findAllInfluencerAuctionPost(
-                influencerAllAuctionPostDto, PageRequest.of(page, size)
+            influencerAllAuctionPostDto, PageRequest.of(page, size)
         );
 
         // 조회 없는 경우 예외 처리
@@ -171,36 +213,36 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 
         for (ReadAuctionPost readAuctionPost : auctionPosts) {
             String thumbnail = auctionImagesRepository.getThumbnailUrl(
-                    readAuctionPost.getAuctionUuid());
+                readAuctionPost.getAuctionUuid());
 
             log.info("thumbnail >>> {}", thumbnail);
 
             auctionPostDtos.add(AuctionPostDto.builder()
-                    .auctionUuid(readAuctionPost.getAuctionUuid())
-                    .influencerUuid(readAuctionPost.getInfluencerUuid())
-                    .influencerName(readAuctionPost.getInfluencerName())
-                    .title(readAuctionPost.getTitle())
-                    .localName(readAuctionPost.getLocalName())
-                    .eventPlace(readAuctionPost.getEventPlace())
-                    .eventStartTime(readAuctionPost.getEventStartTime())
-                    .eventCloseTime(readAuctionPost.getEventCloseTime())
-                    .auctionStartTime(readAuctionPost.getAuctionStartTime())
-                    .auctionEndTime(readAuctionPost.getAuctionEndTime())
-                    .startPrice(readAuctionPost.getStartPrice())
-                    .totalDonation(readAuctionPost.getTotalDonation())
-                    .state(readAuctionPost.getState())
-                    .thumbnail(thumbnail)
-                    .incrementUnit(readAuctionPost.getIncrementUnit())
-                    .build());
+                .auctionUuid(readAuctionPost.getAuctionUuid())
+                .influencerUuid(readAuctionPost.getInfluencerUuid())
+                .influencerName(readAuctionPost.getInfluencerName())
+                .title(readAuctionPost.getTitle())
+                .localName(readAuctionPost.getLocalName())
+                .eventPlace(readAuctionPost.getEventPlace())
+                .eventStartTime(readAuctionPost.getEventStartTime())
+                .eventCloseTime(readAuctionPost.getEventCloseTime())
+                .auctionStartTime(readAuctionPost.getAuctionStartTime())
+                .auctionEndTime(readAuctionPost.getAuctionEndTime())
+                .startPrice(readAuctionPost.getStartPrice())
+                .totalDonation(readAuctionPost.getTotalDonation())
+                .state(readAuctionPost.getState())
+                .thumbnail(thumbnail)
+                .incrementUnit(readAuctionPost.getIncrementUnit())
+                .build());
         }
 
         boolean hasNext = readAuctionPostPage.hasNext();
 
         return InfluencerAllAuctionPostResponseVo.builder()
-                .auctionPostDtos(auctionPostDtos)
-                .currentPage(page)
-                .hasNext(hasNext)
-                .build();
+            .auctionPostDtos(auctionPostDtos)
+            .currentPage(page)
+            .hasNext(hasNext)
+            .build();
     }
 
 
@@ -213,48 +255,15 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         }
     }
 
-    private void createReadAuctionPost(CreateAuctionPostDto createAuctionPostDto) {
-        try {
-            readAuctionPostRepository.save(
-                    ReadAuctionPost.builder()
-                            .auctionUuid(createAuctionPostDto.getAuctionUuid())
-                            .adminUuid(createAuctionPostDto.getAdminUuid())
-                            .influencerUuid(createAuctionPostDto.getInfluencerUuid())
-                            .influencerName(createAuctionPostDto.getInfluencerName())
-                            .title(createAuctionPostDto.getTitle())
-                            .content(createAuctionPostDto.getContent())
-                            .numberOfEventParticipants(createAuctionPostDto.getNumberOfEventParticipants())
-                            .localName(createAuctionPostDto.getLocalName())
-                            .eventPlace(createAuctionPostDto.getEventPlace())
-                            .eventStartTime(createAuctionPostDto.getEventStartTime()
-                                    .plusHours(TimeZoneChangeEnum.KOREA_TO_UTC.getTimeDiff()))
-                            .eventCloseTime(createAuctionPostDto.getEventCloseTime()
-                                    .plusHours(TimeZoneChangeEnum.KOREA_TO_UTC.getTimeDiff()))
-                            .auctionStartTime(createAuctionPostDto.getAuctionStartTime()
-                                    .plusHours(TimeZoneChangeEnum.KOREA_TO_UTC.getTimeDiff()))
-                            .auctionEndTime(createAuctionPostDto.getEventCloseTime()
-                                    .plusHours(TimeZoneChangeEnum.KOREA_TO_UTC.getTimeDiff())
-                                    .plusHours(AuctionEndTimeState.TWO_HOUR.getEndTime()))
-                            .startPrice(createAuctionPostDto.getStartPrice())
-                            .incrementUnit(createAuctionPostDto.getIncrementUnit())
-                            .state(AuctionStateEnum.BEFORE_AUCTION)
-                            .build()
-            );
-        } catch (Exception e) {
-            log.info("Create Read AuctionPost Error", e);
-            throw new CustomException(ResponseStatus.MONGODB_ERROR);
-        }
-    }
-
     private void createAuctionImages(CreateAuctionPostDto createAuctionPostDto) {
         try {
             // 썸네일 저장
             auctionImagesRepository.save(
-                    AuctionImages.builder()
-                            .auctionUuid(createAuctionPostDto.getAuctionUuid())
-                            .imageUrl(createAuctionPostDto.getThumbnail())
-                            .isThumbnail(true)
-                            .build()
+                AuctionImages.builder()
+                    .auctionUuid(createAuctionPostDto.getAuctionUuid())
+                    .imageUrl(createAuctionPostDto.getThumbnail())
+                    .isThumbnail(true)
+                    .build()
             );
 
             // 일반 이미지 저장
@@ -262,11 +271,11 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 
             for (String image : images) {
                 auctionImagesRepository.save(
-                        AuctionImages.builder()
-                                .auctionUuid(createAuctionPostDto.getAuctionUuid())
-                                .imageUrl(image)
-                                .isThumbnail(false)
-                                .build()
+                    AuctionImages.builder()
+                        .auctionUuid(createAuctionPostDto.getAuctionUuid())
+                        .imageUrl(image)
+                        .isThumbnail(false)
+                        .build()
                 );
             }
         } catch (Exception e) {
@@ -275,31 +284,30 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         }
     }
 
-    private void createCommandAutionPost(CreateAuctionPostDto createAuctionPostDto) {
+    private void createCommandAuctionPost(CreateAuctionPostDto createAuctionPostDto) {
         try {
             commandAuctionPostRepository.save(CommandAuctionPost.builder()
-                    .auctionUuid(createAuctionPostDto.getAuctionUuid())
-                    .adminUuid(createAuctionPostDto.getAdminUuid())
-                    .influencerUuid(createAuctionPostDto.getInfluencerUuid())
-                    .influencerName(createAuctionPostDto.getInfluencerName())
-                    .title(createAuctionPostDto.getTitle())
-                    .content(createAuctionPostDto.getContent())
-                    .numberOfEventParticipants(createAuctionPostDto.getNumberOfEventParticipants())
-                    .localName(createAuctionPostDto.getLocalName())
-                    .eventPlace(createAuctionPostDto.getEventPlace())
-                    .eventStartTime(createAuctionPostDto.getEventStartTime()
-                            .plusHours(TimeZoneChangeEnum.KOREA_TO_UTC.getTimeDiff()))
-                    .eventCloseTime(createAuctionPostDto.getEventCloseTime()
-                            .plusHours(TimeZoneChangeEnum.KOREA_TO_UTC.getTimeDiff()))
-                    .auctionStartTime(createAuctionPostDto.getAuctionStartTime()
-                            .plusHours(TimeZoneChangeEnum.KOREA_TO_UTC.getTimeDiff()))
-                    .auctionEndTime(createAuctionPostDto.getAuctionStartTime()
-                            .plusHours(TimeZoneChangeEnum.KOREA_TO_UTC.getTimeDiff())
-                            .plusHours(AuctionEndTimeState.TWO_HOUR.getEndTime()))
-                    .startPrice(createAuctionPostDto.getStartPrice())
-                    .incrementUnit(createAuctionPostDto.getIncrementUnit())
-                    .state(AuctionStateEnum.BEFORE_AUCTION)
-                    .build());
+                .auctionUuid(createAuctionPostDto.getAuctionUuid())
+                .adminUuid(createAuctionPostDto.getAdminUuid())
+                .influencerUuid(createAuctionPostDto.getInfluencerUuid())
+                .influencerName(createAuctionPostDto.getInfluencerName())
+                .title(createAuctionPostDto.getTitle())
+                .content(createAuctionPostDto.getContent())
+                .numberOfEventParticipants(createAuctionPostDto.getNumberOfEventParticipants())
+                .localName(createAuctionPostDto.getLocalName())
+                .eventPlace(createAuctionPostDto.getEventPlace())
+                .eventStartTime(createAuctionPostDto.getEventStartTime())
+                .eventCloseTime(createAuctionPostDto.getEventCloseTime())
+                .auctionStartTime(createAuctionPostDto.getAuctionStartTime())
+                .auctionEndTime(
+                    Instant.ofEpochMilli(createAuctionPostDto.getAuctionStartTime())
+                        .plus(Duration.ofHours(AuctionEndTimeState.TWO_HOUR.getEndTime()))
+                        .toEpochMilli()
+                )
+                .startPrice(createAuctionPostDto.getStartPrice())
+                .incrementUnit(createAuctionPostDto.getIncrementUnit())
+                .state(AuctionStateEnum.BEFORE_AUCTION)
+                .build());
         } catch (Exception e) {
             log.info("Create Command AuctionPost Error", e);
             throw new CustomException(ResponseStatus.POSTGRESQL_ERROR);
