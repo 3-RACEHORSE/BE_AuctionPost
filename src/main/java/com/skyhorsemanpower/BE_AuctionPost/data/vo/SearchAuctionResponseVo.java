@@ -61,6 +61,12 @@ public class SearchAuctionResponseVo {
             readAuctionPost.getAuctionStartTime());
         this.auctionEndTime = DateTimeConverter.instantToLocalDateTime(
             readAuctionPost.getAuctionEndTime());
+        this.startPrice = readAuctionPost.getStartPrice();
+        this.incrementUnit = readAuctionPost.getIncrementUnit();
+        this.totalDonation = readAuctionPost.getTotalDonation();
+        this.state = readAuctionPost.getState();
+        this.createdAt = readAuctionPost.getCreatedAt();
+        this.updatedAt = readAuctionPost.getUpdatedAt();
         this.thumbnail = thumbnail;
         this.images = images;
     }

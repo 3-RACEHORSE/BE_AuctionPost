@@ -25,6 +25,7 @@ import com.skyhorsemanpower.BE_AuctionPost.status.AuctionPostFilteringEnum;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
 import com.skyhorsemanpower.BE_AuctionPost.status.PageState;
 import com.skyhorsemanpower.BE_AuctionPost.status.ResponseStatus;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -126,11 +127,11 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                 .eventCloseTime(readAuctionPost.getEventCloseTime())
                 .auctionStartTime(readAuctionPost.getAuctionStartTime())
                 .auctionEndTime(readAuctionPost.getAuctionEndTime())
-                .startPrice(readAuctionPost.getStartPrice())
-                .totalDonation(readAuctionPost.getTotalDonation())
+                .startPrice(new BigDecimal(readAuctionPost.getStartPrice()))
+                .totalDonation(new BigDecimal(readAuctionPost.getTotalDonation()))
                 .state(readAuctionPost.getState())
                 .thumbnail(thumbnail)
-                .incrementUnit(readAuctionPost.getIncrementUnit())
+                .incrementUnit(new BigDecimal(readAuctionPost.getIncrementUnit()))
                 .build());
         }
 
@@ -149,6 +150,13 @@ public class AuctionPostServiceImpl implements AuctionPostService {
             searchAuctionPostDto.getAuctionUuid()).orElseThrow(
             () -> new CustomException(ResponseStatus.NO_DATA)
         );
+
+        BigDecimal totalDonation = BigDecimal.ZERO;
+
+        if (readAuctionPost.getTotalDonation() != null) {
+            totalDonation = new BigDecimal(readAuctionPost.getTotalDonation());
+        }
+
         return SearchAuctionResponseVo.builder()
             .readAuctionPost(AllAuctionPostDto.builder()
                 .auctionPostId(readAuctionPost.getAuctionPostId())
@@ -164,9 +172,9 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                 .eventCloseTime(readAuctionPost.getEventCloseTime())
                 .auctionStartTime(readAuctionPost.getAuctionStartTime())
                 .auctionEndTime(readAuctionPost.getAuctionEndTime())
-                .startPrice(readAuctionPost.getStartPrice())
-                .incrementUnit(readAuctionPost.getIncrementUnit())
-                .totalDonation(readAuctionPost.getTotalDonation())
+                .startPrice(new BigDecimal(readAuctionPost.getStartPrice()))
+                .incrementUnit(new BigDecimal(readAuctionPost.getIncrementUnit()))
+                .totalDonation(totalDonation)
                 .state(readAuctionPost.getState())
                 .createdAt(readAuctionPost.getCreatedAt())
                 .updatedAt(readAuctionPost.getUpdatedAt())
@@ -228,11 +236,11 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                 .eventCloseTime(readAuctionPost.getEventCloseTime())
                 .auctionStartTime(readAuctionPost.getAuctionStartTime())
                 .auctionEndTime(readAuctionPost.getAuctionEndTime())
-                .startPrice(readAuctionPost.getStartPrice())
-                .totalDonation(readAuctionPost.getTotalDonation())
+                .startPrice(new BigDecimal(readAuctionPost.getStartPrice()))
+                .totalDonation(new BigDecimal(readAuctionPost.getTotalDonation()))
                 .state(readAuctionPost.getState())
                 .thumbnail(thumbnail)
-                .incrementUnit(readAuctionPost.getIncrementUnit())
+                .incrementUnit(new BigDecimal(readAuctionPost.getIncrementUnit()))
                 .build());
         }
 
