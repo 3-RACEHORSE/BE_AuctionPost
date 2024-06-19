@@ -1,8 +1,10 @@
 package com.skyhorsemanpower.BE_AuctionPost.common;
 
+import com.skyhorsemanpower.BE_AuctionPost.status.TimeZoneChangeEnum;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 public class DateTimeConverter {
 
@@ -12,6 +14,12 @@ public class DateTimeConverter {
 
     public static long localDateTimeToInstant(LocalDateTime localDateTime) {
         return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    }
+
+    public static long kstLocalDateTimeToInstant(LocalDateTime kstLocalDateTime) {
+        return kstLocalDateTime.minusHours(TimeZoneChangeEnum.KOREA.getTimeDiff())
+            .toInstant(ZoneOffset.UTC)
+            .toEpochMilli();
     }
 
 }
