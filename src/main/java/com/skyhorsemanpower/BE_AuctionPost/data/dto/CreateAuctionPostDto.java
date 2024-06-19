@@ -57,10 +57,10 @@ public class CreateAuctionPostDto {
     }
 
 
-    public static CreateAuctionPostDto voToDto(String uuid,
+    public static CreateAuctionPostDto voToDto(String adminUuid,
         CreateAuctionPostRequestVo createAuctionPostRequestVo) {
         return CreateAuctionPostDto.builder()
-            .adminUuid(uuid)
+            .adminUuid(adminUuid)
             .influencerUuid(createAuctionPostRequestVo.getInfluencerUuid())
             .influencerName(createAuctionPostRequestVo.getInfluencerName())
             .title(createAuctionPostRequestVo.getTitle())
