@@ -34,8 +34,8 @@ public class SearchAuctionResponseVo {
     private BigDecimal incrementUnit;
     private BigDecimal totalDonation;
     private AuctionStateEnum state;
-    private long createdAt;
-    private long updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     private String thumbnail;
     private List<String> images;
@@ -65,8 +65,8 @@ public class SearchAuctionResponseVo {
         this.incrementUnit = readAuctionPost.getIncrementUnit();
         this.totalDonation = readAuctionPost.getTotalDonation();
         this.state = readAuctionPost.getState();
-        this.createdAt = readAuctionPost.getCreatedAt();
-        this.updatedAt = readAuctionPost.getUpdatedAt();
+        this.createdAt = DateTimeConverter.instantToLocalDateTime(readAuctionPost.getCreatedAt());
+        this.updatedAt = DateTimeConverter.instantToLocalDateTime(readAuctionPost.getUpdatedAt());
         this.thumbnail = thumbnail;
         this.images = images;
     }

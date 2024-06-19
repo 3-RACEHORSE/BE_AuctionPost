@@ -163,6 +163,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                 .auctionUuid(readAuctionPost.getAuctionUuid())
                 .adminUuid(readAuctionPost.getAdminUuid())
                 .influencerUuid(readAuctionPost.getInfluencerUuid())
+                .influencerName(readAuctionPost.getInfluencerName())
                 .title(readAuctionPost.getTitle())
                 .content(readAuctionPost.getContent())
                 .numberOfEventParticipants(readAuctionPost.getNumberOfEventParticipants())

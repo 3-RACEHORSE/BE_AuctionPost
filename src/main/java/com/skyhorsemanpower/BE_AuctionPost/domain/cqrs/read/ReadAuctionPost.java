@@ -1,7 +1,6 @@
 package com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read;
 
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
-import java.math.BigDecimal;
 import java.time.Instant;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +17,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class ReadAuctionPost {
 
     @Id
-    @Field(name = "auction_post_id")
     private String auctionPostId;
     @Field(name = "auction_uuid")
     private String auctionUuid;
