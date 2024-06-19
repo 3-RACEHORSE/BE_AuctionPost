@@ -69,15 +69,15 @@ public class CreateAuctionPostDto {
             .localName(createAuctionPostRequestVo.getLocalName())
             .eventPlace(createAuctionPostRequestVo.getEventPlace())
             .eventStartTime(
-                DateTimeConverter.localDateTimeToInstant(
+                DateTimeConverter.kstLocalDateTimeToInstant(
                     createAuctionPostRequestVo.getEventStartTime())
             )
             .eventCloseTime(
-                DateTimeConverter.localDateTimeToInstant(
+                DateTimeConverter.kstLocalDateTimeToInstant(
                     createAuctionPostRequestVo.getEventCloseTime())
             )
             .auctionStartTime(
-                DateTimeConverter.localDateTimeToInstant(
+                DateTimeConverter.kstLocalDateTimeToInstant(
                     createAuctionPostRequestVo.getAuctionStartTime())
             )
             .startPrice(createAuctionPostRequestVo.getStartPrice())
