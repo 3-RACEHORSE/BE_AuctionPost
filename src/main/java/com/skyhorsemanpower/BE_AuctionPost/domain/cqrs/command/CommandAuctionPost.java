@@ -2,12 +2,20 @@ package com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.command;
 
 import com.skyhorsemanpower.BE_AuctionPost.common.BaseCreateAndEndTimeEntity;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.cglib.core.Local;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -49,16 +57,16 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
     private String eventPlace;
 
     @Column(nullable = false, length = 30)
-    private LocalDateTime eventStartTime;
+    private long eventStartTime;
 
     @Column(nullable = false, length = 30)
-    private LocalDateTime eventCloseTime;
+    private long eventCloseTime;
 
     @Column(nullable = false, length = 30)
-    private LocalDateTime auctionStartTime;
+    private long auctionStartTime;
 
     @Column(nullable = false, length = 30)
-    private LocalDateTime auctionEndTime;
+    private long auctionEndTime;
 
     @Column(nullable = false, precision = 20, scale = 2)
     private BigDecimal startPrice;
@@ -75,12 +83,13 @@ public class CommandAuctionPost extends BaseCreateAndEndTimeEntity {
 
 
     @Builder
-    public CommandAuctionPost(long auctionPostId, String auctionUuid, String adminUuid, String influencerUuid,
-                              String influencerName, String title, String content, int numberOfEventParticipants,
-                              String localName, String eventPlace, LocalDateTime eventStartTime,
-                              LocalDateTime auctionEndTime, LocalDateTime eventCloseTime,
-                              LocalDateTime auctionStartTime, BigDecimal startPrice, BigDecimal incrementUnit,
-                              BigDecimal totalDonation, AuctionStateEnum state) {
+    public CommandAuctionPost(long auctionPostId, String auctionUuid, String adminUuid,
+        String influencerUuid,
+        String influencerName, String title, String content, int numberOfEventParticipants,
+        String localName, String eventPlace, long eventStartTime,
+        long auctionEndTime, long eventCloseTime,
+        long auctionStartTime, BigDecimal startPrice, BigDecimal incrementUnit,
+        BigDecimal totalDonation, AuctionStateEnum state) {
         this.auctionPostId = auctionPostId;
         this.auctionUuid = auctionUuid;
         this.adminUuid = adminUuid;
