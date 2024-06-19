@@ -46,7 +46,7 @@ public enum ResponseStatus {
     // 은행 점검 중인 경우
     BANK_CHECK_TIME(404, "은행 점검 중인 시간입니다."),
     // 숫자로 변환 불가능한 값인 경우
-    INVALID_VALUE_TO_CONVERT_DECIMAL(400, "숫자로 변환할 수 없는 값입니다.")
+    INVALID_VALUE_TO_CONVERT_DECIMAL(500, "숫자로 변환할 수 없는 값입니다.")
     ;
 
     private final int code;
