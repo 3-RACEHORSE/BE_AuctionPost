@@ -19,9 +19,9 @@ public class QBaseCreateAndEndTimeEntity extends EntityPathBase<BaseCreateAndEnd
 
     public static final QBaseCreateAndEndTimeEntity baseCreateAndEndTimeEntity = new QBaseCreateAndEndTimeEntity("baseCreateAndEndTimeEntity");
 
-    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
+    public final NumberPath<Long> createdAt = createNumber("createdAt", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> updatedAt = createDateTime("updatedAt", java.time.LocalDateTime.class);
+    public final NumberPath<Long> updatedAt = createNumber("updatedAt", Long.class);
 
     public QBaseCreateAndEndTimeEntity(String variable) {
         super(BaseCreateAndEndTimeEntity.class, forVariable(variable));

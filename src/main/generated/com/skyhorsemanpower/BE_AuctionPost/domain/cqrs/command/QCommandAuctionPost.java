@@ -23,24 +23,24 @@ public class QCommandAuctionPost extends EntityPathBase<CommandAuctionPost> {
 
     public final StringPath adminUuid = createString("adminUuid");
 
-    public final DateTimePath<java.time.LocalDateTime> auctionEndTime = createDateTime("auctionEndTime", java.time.LocalDateTime.class);
+    public final NumberPath<Long> auctionEndTime = createNumber("auctionEndTime", Long.class);
 
     public final NumberPath<Long> auctionPostId = createNumber("auctionPostId", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> auctionStartTime = createDateTime("auctionStartTime", java.time.LocalDateTime.class);
+    public final NumberPath<Long> auctionStartTime = createNumber("auctionStartTime", Long.class);
 
     public final StringPath auctionUuid = createString("auctionUuid");
 
     public final StringPath content = createString("content");
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+    public final NumberPath<Long> createdAt = _super.createdAt;
 
-    public final DateTimePath<java.time.LocalDateTime> eventCloseTime = createDateTime("eventCloseTime", java.time.LocalDateTime.class);
+    public final NumberPath<Long> eventCloseTime = createNumber("eventCloseTime", Long.class);
 
     public final StringPath eventPlace = createString("eventPlace");
 
-    public final DateTimePath<java.time.LocalDateTime> eventStartTime = createDateTime("eventStartTime", java.time.LocalDateTime.class);
+    public final NumberPath<Long> eventStartTime = createNumber("eventStartTime", Long.class);
 
     public final NumberPath<java.math.BigDecimal> incrementUnit = createNumber("incrementUnit", java.math.BigDecimal.class);
 
@@ -61,7 +61,7 @@ public class QCommandAuctionPost extends EntityPathBase<CommandAuctionPost> {
     public final NumberPath<java.math.BigDecimal> totalDonation = createNumber("totalDonation", java.math.BigDecimal.class);
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
+    public final NumberPath<Long> updatedAt = _super.updatedAt;
 
     public QCommandAuctionPost(String variable) {
         super(CommandAuctionPost.class, forVariable(variable));
