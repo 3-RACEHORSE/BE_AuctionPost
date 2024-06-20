@@ -17,10 +17,10 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 @EnableKafka
 public class KafkaConsumerConfig {
 
-	@Value('${spring.kafka.bootstrap-servers}')
+	@Value("${spring.kafka.bootstrap-servers}")
 	private String bootstrapServers;
 
-	@Value('${spring.kafka.consumer.group-id}')
+	@Value("${spring.kafka.consumer.group-id}")
 	private String groupId;
 
 	@Bean
