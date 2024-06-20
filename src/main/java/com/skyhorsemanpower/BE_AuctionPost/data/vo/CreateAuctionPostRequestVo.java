@@ -17,9 +17,9 @@ public class CreateAuctionPostRequestVo {
     private int numberOfEventParticipants;
     private String localName;
     private String eventPlace;
-    private LocalDateTime eventStartTime;
-    private LocalDateTime eventCloseTime;
-    private LocalDateTime auctionStartTime;
+    private LocalDateTime eventStartTime; // KST
+    private LocalDateTime eventCloseTime; // KST
+    private LocalDateTime auctionStartTime; // KST
     private BigDecimal startPrice;
     private BigDecimal incrementUnit;
 

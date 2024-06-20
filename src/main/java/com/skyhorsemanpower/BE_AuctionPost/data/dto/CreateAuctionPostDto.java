@@ -57,10 +57,10 @@ public class CreateAuctionPostDto {
     }
 
 
-    public static CreateAuctionPostDto voToDto(String uuid,
+    public static CreateAuctionPostDto voToDto(String adminUuid,
         CreateAuctionPostRequestVo createAuctionPostRequestVo) {
         return CreateAuctionPostDto.builder()
-            .adminUuid(uuid)
+            .adminUuid(adminUuid)
             .influencerUuid(createAuctionPostRequestVo.getInfluencerUuid())
             .influencerName(createAuctionPostRequestVo.getInfluencerName())
             .title(createAuctionPostRequestVo.getTitle())
@@ -69,15 +69,15 @@ public class CreateAuctionPostDto {
             .localName(createAuctionPostRequestVo.getLocalName())
             .eventPlace(createAuctionPostRequestVo.getEventPlace())
             .eventStartTime(
-                DateTimeConverter.localDateTimeToInstant(
+                DateTimeConverter.kstLocalDateTimeToInstant(
                     createAuctionPostRequestVo.getEventStartTime())
             )
             .eventCloseTime(
-                DateTimeConverter.localDateTimeToInstant(
+                DateTimeConverter.kstLocalDateTimeToInstant(
                     createAuctionPostRequestVo.getEventCloseTime())
             )
             .auctionStartTime(
-                DateTimeConverter.localDateTimeToInstant(
+                DateTimeConverter.kstLocalDateTimeToInstant(
                     createAuctionPostRequestVo.getAuctionStartTime())
             )
             .startPrice(createAuctionPostRequestVo.getStartPrice())
