@@ -20,7 +20,7 @@ public class KafkaConsumerCluster {
 	private final AuctionPostService auctionPostService;
 
 	@KafkaListener(
-		topics = "donation-auction-post-update-topic",
+		topics = "auction-post-topic",
 		groupId = "${spring.kafka.consumer.group-id}"
 	)
 	public void updateDonationAuctionPost(
