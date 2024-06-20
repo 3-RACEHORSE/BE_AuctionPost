@@ -17,6 +17,9 @@ import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.domain.AuctionImages;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.command.CommandAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read.ReadAuctionPost;
+import com.skyhorsemanpower.BE_AuctionPost.kafka.KafkaProducerCluster;
+import com.skyhorsemanpower.BE_AuctionPost.kafka.Topics;
+import com.skyhorsemanpower.BE_AuctionPost.kafka.dto.InitialAuctionDto;
 import com.skyhorsemanpower.BE_AuctionPost.repository.AuctionImagesRepository;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.CommandAuctionPostRepository;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.read.ReadAuctionPostRepository;
@@ -52,6 +55,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
     private final ReadAuctionPostRepository readAuctionPostRepository;
     private final AuctionImagesRepository auctionImagesRepository;
     private final QuartzConfig quartzConfig;
+    private final KafkaProducerCluster producer;
 
     @Override
     @Transactional
@@ -76,6 +80,16 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 
         // 스케줄러에 경매 마감 등록
         createScheduler(auctionUuid);
+
+        // 경매 서비스에 메시지 전달
+        InitialAuctionDto initialAuctionDto = InitialAuctionDto.builder()
+                .auctionUuid(auctionUuid)
+                .startPrice(createAuctionPostDto.getStartPrice())
+                .numberOfEventParticipants(createAuctionPostDto.getNumberOfEventParticipants())
+                .auctionStartTime(createAuctionPostDto.getAuctionStartTime())
+                .build();
+        log.info("InitialAuctionDto >>> {}", initialAuctionDto.toString());
+        producer.sendMessage(Topics.Constant.INITIAL_AUCTION, initialAuctionDto);
     }
 
     @Override
