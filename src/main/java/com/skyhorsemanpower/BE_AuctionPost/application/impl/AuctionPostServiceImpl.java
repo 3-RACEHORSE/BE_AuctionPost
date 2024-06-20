@@ -78,18 +78,25 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         createCommandAuctionPost(createAuctionPostDto);
         createAuctionImages(createAuctionPostDto);
 
-        // 스케줄러에 경매 마감 등록
-        createScheduler(auctionUuid);
+        startAuctionJobSchedule(auctionUuid, createAuctionPostDto.getAuctionStartTime());
 
-        // 경매 서비스에 메시지 전달
         InitialAuctionDto initialAuctionDto = InitialAuctionDto.builder()
-                .auctionUuid(auctionUuid)
-                .startPrice(createAuctionPostDto.getStartPrice())
-                .numberOfEventParticipants(createAuctionPostDto.getNumberOfEventParticipants())
-                .auctionStartTime(createAuctionPostDto.getAuctionStartTime())
-                .build();
-        log.info("InitialAuctionDto >>> {}", initialAuctionDto.toString());
+            .auctionUuid(auctionUuid)
+            .startPrice(createAuctionPostDto.getStartPrice())
+            .numberOfEventParticipants(createAuctionPostDto.getNumberOfEventParticipants())
+            .auctionStartTime(createAuctionPostDto.getAuctionStartTime())
+            .build();
+
         producer.sendMessage(Topics.Constant.INITIAL_AUCTION, initialAuctionDto);
+    }
+
+    private void startAuctionJobSchedule(String auctionUuid, long auctionStartTime) {
+        try {
+            quartzConfig.schedulerStartAuctionJob(auctionUuid, auctionStartTime);
+        } catch (SchedulerException e) {
+            log.info("Scheduler exception for auction UUID: {}", auctionUuid, e);
+            throw new CustomException(ResponseStatus.SCHEDULER_ERROR);
+        }
     }
 
     @Override
@@ -275,16 +282,6 @@ public class AuctionPostServiceImpl implements AuctionPostService {
             .currentPage(page)
             .hasNext(hasNext)
             .build();
-    }
-
-
-    private void createScheduler(String auctionUuid) {
-        try {
-            quartzConfig.schedulerEndAuctionJob(auctionUuid);
-        } catch (SchedulerException e) {
-            log.info("Scheduler exception for auction UUID: {}", auctionUuid, e);
-            throw new CustomException(ResponseStatus.SCHEDULER_ERROR);
-        }
     }
 
     private void createAuctionImages(CreateAuctionPostDto createAuctionPostDto) {
