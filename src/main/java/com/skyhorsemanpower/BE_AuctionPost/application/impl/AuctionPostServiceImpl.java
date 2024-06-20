@@ -338,6 +338,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 	}
 
 	@Override
+	@Transactional
 	public void updateTotalDonationAmount(UpdateTotalDonationUpdateVo updateTotalDonationUpdateVo) {
 		CommandAuctionPost auctionPost = commandAuctionPostRepository.findByAuctionUuid(
 			updateTotalDonationUpdateVo.getAuctionUuid()).orElseThrow(
