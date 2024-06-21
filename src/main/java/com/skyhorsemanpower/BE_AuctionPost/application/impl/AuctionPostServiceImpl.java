@@ -83,6 +83,9 @@ public class AuctionPostServiceImpl implements AuctionPostService {
             .startPrice(createAuctionPostDto.getStartPrice())
             .numberOfEventParticipants(createAuctionPostDto.getNumberOfEventParticipants())
             .auctionStartTime(createAuctionPostDto.getAuctionStartTime())
+            .auctionEndTime(Instant.ofEpochMilli(createAuctionPostDto.getAuctionStartTime())
+                .plus(Duration.ofHours(AuctionEndTimeState.TWO_HOUR.getEndTime()))
+                .toEpochMilli())
             .build();
 
         producer.sendMessage(Topics.Constant.INITIAL_AUCTION, initialAuctionDto);
@@ -135,9 +138,12 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         for (ReadAuctionPost readAuctionPost : auctionPosts) {
 
             // exception을 던질 수 있는 메서드를 먼저 실행
-            BigDecimal startPrice = StringToBigDecimalConverter.convert(readAuctionPost.getStartPrice());
-            BigDecimal totalDonation = StringToBigDecimalConverter.convert(readAuctionPost.getTotalDonation());
-            BigDecimal incrementUnit = StringToBigDecimalConverter.convert(readAuctionPost.getIncrementUnit());
+            BigDecimal startPrice = StringToBigDecimalConverter.convert(
+                readAuctionPost.getStartPrice());
+            BigDecimal totalDonation = StringToBigDecimalConverter.convert(
+                readAuctionPost.getTotalDonation());
+            BigDecimal incrementUnit = StringToBigDecimalConverter.convert(
+                readAuctionPost.getIncrementUnit());
 
             String thumbnail = auctionImagesRepository.getThumbnailUrl(
                 readAuctionPost.getAuctionUuid());
@@ -177,9 +183,12 @@ public class AuctionPostServiceImpl implements AuctionPostService {
             () -> new CustomException(ResponseStatus.NO_DATA)
         );
 
-        BigDecimal startPrice = StringToBigDecimalConverter.convert(readAuctionPost.getStartPrice());
-        BigDecimal totalDonation = StringToBigDecimalConverter.convert(readAuctionPost.getTotalDonation());
-        BigDecimal incrementUnit = StringToBigDecimalConverter.convert(readAuctionPost.getIncrementUnit());
+        BigDecimal startPrice = StringToBigDecimalConverter.convert(
+            readAuctionPost.getStartPrice());
+        BigDecimal totalDonation = StringToBigDecimalConverter.convert(
+            readAuctionPost.getTotalDonation());
+        BigDecimal incrementUnit = StringToBigDecimalConverter.convert(
+            readAuctionPost.getIncrementUnit());
 
         return SearchAuctionResponseVo.builder()
             .readAuctionPost(AllAuctionPostDto.builder()
@@ -245,9 +254,12 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         List<AuctionPostDto> auctionPostDtos = new ArrayList<>();
 
         for (ReadAuctionPost readAuctionPost : auctionPosts) {
-            BigDecimal startPrice = StringToBigDecimalConverter.convert(readAuctionPost.getStartPrice());
-            BigDecimal totalDonation = StringToBigDecimalConverter.convert(readAuctionPost.getTotalDonation());
-            BigDecimal incrementUnit = StringToBigDecimalConverter.convert(readAuctionPost.getIncrementUnit());
+            BigDecimal startPrice = StringToBigDecimalConverter.convert(
+                readAuctionPost.getStartPrice());
+            BigDecimal totalDonation = StringToBigDecimalConverter.convert(
+                readAuctionPost.getTotalDonation());
+            BigDecimal incrementUnit = StringToBigDecimalConverter.convert(
+                readAuctionPost.getIncrementUnit());
 
             String thumbnail = auctionImagesRepository.getThumbnailUrl(
                 readAuctionPost.getAuctionUuid());
