@@ -64,8 +64,6 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         if (DateTimeConverter.instantToLocalDateTime(createAuctionPostDto.getAuctionStartTime())
             .toLocalTime()
             .isAfter(AuctionLimitTimeEnum.BANK_CHECK.getTime())) {
-            log.info("Auction Start Time (Timestamp) >>> {}",
-                createAuctionPostDto.getAuctionStartTime());
 
             throw new CustomException(ResponseStatus.BANK_CHECK_TIME);
         }
