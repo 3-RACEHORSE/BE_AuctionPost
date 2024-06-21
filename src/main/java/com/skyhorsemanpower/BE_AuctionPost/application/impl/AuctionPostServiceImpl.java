@@ -64,8 +64,6 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         if (DateTimeConverter.instantToLocalDateTime(createAuctionPostDto.getAuctionStartTime())
             .toLocalTime()
             .isAfter(AuctionLimitTimeEnum.BANK_CHECK.getTime())) {
-            log.info("Auction Start Time (Timestamp) >>> {}",
-                createAuctionPostDto.getAuctionStartTime());
 
             throw new CustomException(ResponseStatus.BANK_CHECK_TIME);
         }
@@ -78,24 +76,28 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         createCommandAuctionPost(createAuctionPostDto);
         createAuctionImages(createAuctionPostDto);
 
-        // 스케줄러에 경매 마감 등록
-        createScheduler(auctionUuid);
+        startAuctionJobSchedule(auctionUuid, createAuctionPostDto.getAuctionStartTime());
 
-        // 경매 서비스에 메시지 전달
         InitialAuctionDto initialAuctionDto = InitialAuctionDto.builder()
-                .auctionUuid(auctionUuid)
-                .startPrice(createAuctionPostDto.getStartPrice())
-                .numberOfEventParticipants(createAuctionPostDto.getNumberOfEventParticipants())
-                .auctionStartTime(createAuctionPostDto.getAuctionStartTime())
-                .auctionEndTime(
-                        Instant.ofEpochMilli(createAuctionPostDto.getAuctionStartTime())
-                                .plus(Duration.ofHours(AuctionEndTimeState.TWO_HOUR.getEndTime()))
-                                .toEpochMilli()
-                )
-                .incrementUnit(createAuctionPostDto.getIncrementUnit())
-                .build();
-        log.info("InitialAuctionDto >>> {}", initialAuctionDto.toString());
+            .auctionUuid(auctionUuid)
+            .startPrice(createAuctionPostDto.getStartPrice())
+            .numberOfEventParticipants(createAuctionPostDto.getNumberOfEventParticipants())
+            .auctionStartTime(createAuctionPostDto.getAuctionStartTime())
+            .auctionEndTime(Instant.ofEpochMilli(createAuctionPostDto.getAuctionStartTime())
+                .plus(Duration.ofHours(AuctionEndTimeState.TWO_HOUR.getEndTime()))
+                .toEpochMilli())
+            .build();
+
         producer.sendMessage(Topics.Constant.INITIAL_AUCTION, initialAuctionDto);
+    }
+
+    private void startAuctionJobSchedule(String auctionUuid, long auctionStartTime) {
+        try {
+            quartzConfig.schedulerStartAuctionJob(auctionUuid, auctionStartTime);
+        } catch (SchedulerException e) {
+            log.info("Scheduler exception for auction UUID: {}", auctionUuid, e);
+            throw new CustomException(ResponseStatus.SCHEDULER_ERROR);
+        }
     }
 
     @Override
@@ -136,9 +138,12 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         for (ReadAuctionPost readAuctionPost : auctionPosts) {
 
             // exception을 던질 수 있는 메서드를 먼저 실행
-            BigDecimal startPrice = StringToBigDecimalConverter.convert(readAuctionPost.getStartPrice());
-            BigDecimal totalDonation = StringToBigDecimalConverter.convert(readAuctionPost.getTotalDonation());
-            BigDecimal incrementUnit = StringToBigDecimalConverter.convert(readAuctionPost.getIncrementUnit());
+            BigDecimal startPrice = StringToBigDecimalConverter.convert(
+                readAuctionPost.getStartPrice());
+            BigDecimal totalDonation = StringToBigDecimalConverter.convert(
+                readAuctionPost.getTotalDonation());
+            BigDecimal incrementUnit = StringToBigDecimalConverter.convert(
+                readAuctionPost.getIncrementUnit());
 
             String thumbnail = auctionImagesRepository.getThumbnailUrl(
                 readAuctionPost.getAuctionUuid());
@@ -178,9 +183,12 @@ public class AuctionPostServiceImpl implements AuctionPostService {
             () -> new CustomException(ResponseStatus.NO_DATA)
         );
 
-        BigDecimal startPrice = StringToBigDecimalConverter.convert(readAuctionPost.getStartPrice());
-        BigDecimal totalDonation = StringToBigDecimalConverter.convert(readAuctionPost.getTotalDonation());
-        BigDecimal incrementUnit = StringToBigDecimalConverter.convert(readAuctionPost.getIncrementUnit());
+        BigDecimal startPrice = StringToBigDecimalConverter.convert(
+            readAuctionPost.getStartPrice());
+        BigDecimal totalDonation = StringToBigDecimalConverter.convert(
+            readAuctionPost.getTotalDonation());
+        BigDecimal incrementUnit = StringToBigDecimalConverter.convert(
+            readAuctionPost.getIncrementUnit());
 
         return SearchAuctionResponseVo.builder()
             .readAuctionPost(AllAuctionPostDto.builder()
@@ -246,9 +254,12 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         List<AuctionPostDto> auctionPostDtos = new ArrayList<>();
 
         for (ReadAuctionPost readAuctionPost : auctionPosts) {
-            BigDecimal startPrice = StringToBigDecimalConverter.convert(readAuctionPost.getStartPrice());
-            BigDecimal totalDonation = StringToBigDecimalConverter.convert(readAuctionPost.getTotalDonation());
-            BigDecimal incrementUnit = StringToBigDecimalConverter.convert(readAuctionPost.getIncrementUnit());
+            BigDecimal startPrice = StringToBigDecimalConverter.convert(
+                readAuctionPost.getStartPrice());
+            BigDecimal totalDonation = StringToBigDecimalConverter.convert(
+                readAuctionPost.getTotalDonation());
+            BigDecimal incrementUnit = StringToBigDecimalConverter.convert(
+                readAuctionPost.getIncrementUnit());
 
             String thumbnail = auctionImagesRepository.getThumbnailUrl(
                 readAuctionPost.getAuctionUuid());
@@ -281,16 +292,6 @@ public class AuctionPostServiceImpl implements AuctionPostService {
             .currentPage(page)
             .hasNext(hasNext)
             .build();
-    }
-
-
-    private void createScheduler(String auctionUuid) {
-        try {
-            quartzConfig.schedulerEndAuctionJob(auctionUuid);
-        } catch (SchedulerException e) {
-            log.info("Scheduler exception for auction UUID: {}", auctionUuid, e);
-            throw new CustomException(ResponseStatus.SCHEDULER_ERROR);
-        }
     }
 
     private void createAuctionImages(CreateAuctionPostDto createAuctionPostDto) {
