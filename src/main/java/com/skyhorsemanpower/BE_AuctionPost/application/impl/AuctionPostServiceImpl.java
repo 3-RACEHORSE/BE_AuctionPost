@@ -87,6 +87,12 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                 .startPrice(createAuctionPostDto.getStartPrice())
                 .numberOfEventParticipants(createAuctionPostDto.getNumberOfEventParticipants())
                 .auctionStartTime(createAuctionPostDto.getAuctionStartTime())
+                .auctionEndTime(
+                        Instant.ofEpochMilli(createAuctionPostDto.getAuctionStartTime())
+                                .plus(Duration.ofHours(AuctionEndTimeState.TWO_HOUR.getEndTime()))
+                                .toEpochMilli()
+                )
+                .incrementUnit(createAuctionPostDto.getIncrementUnit())
                 .build();
         log.info("InitialAuctionDto >>> {}", initialAuctionDto.toString());
         producer.sendMessage(Topics.Constant.INITIAL_AUCTION, initialAuctionDto);
