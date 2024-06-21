@@ -21,7 +21,7 @@ public class KafkaConsumerCluster {
 
 	@KafkaListener(
 		topics = Topics.Constant.AUCTION_POST_DONATION_UPDATE,
-		groupId = "${spring.kafka.group-id}"
+		groupId = "${spring.kafka.consumer.group-id}"
 	)
 	public void updateDonationAuctionPost(
 		@Payload LinkedHashMap<String, Object> message,
