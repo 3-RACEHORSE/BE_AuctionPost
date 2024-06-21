@@ -2,6 +2,7 @@ package com.skyhorsemanpower.BE_AuctionPost.config;
 
 import com.skyhorsemanpower.BE_AuctionPost.quartz.StartAuctionJob;
 import com.skyhorsemanpower.BE_AuctionPost.quartz.StartAuctionJobListener;
+import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.CommandAuctionPostRepository;
 import java.time.Instant;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 public class QuartzConfig {
 
     private final Scheduler scheduler;
+    private final CommandAuctionPostRepository commandAuctionPostRepository;
 
     @Bean
     public Scheduler scheduler() throws SchedulerException {
@@ -47,10 +49,10 @@ public class QuartzConfig {
             .withDescription("Trigger when auction start time.")
             .startAt(Date.from(Instant.ofEpochMilli(auctionStartTime)))
             .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                .withMisfireHandlingInstructionNextWithExistingCount())
+                .withMisfireHandlingInstructionNextWithExistingCount().withRepeatCount(0))
             .build();
 
-        StartAuctionJobListener startAuctionJobListener = new StartAuctionJobListener();
+        StartAuctionJobListener startAuctionJobListener = new StartAuctionJobListener(commandAuctionPostRepository);
         scheduler.getListenerManager()
             .addJobListener(startAuctionJobListener);
         scheduler.start();

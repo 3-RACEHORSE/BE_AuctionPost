@@ -18,15 +18,17 @@ public class StartAuctionJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        log.info(">>>>> startAuctionJob");
+
         String auctionUuid = context.getJobDetail().getJobDataMap().getString("auctionUuid");
 
         Optional<CommandAuctionPost> commandAuctionPostOpt = commandAuctionPostRepository.findByAuctionUuid(auctionUuid);
         if (commandAuctionPostOpt.isEmpty()) {
-            context.getJobDetail().getJobDataMap().put("auctionPostExists", false);
+            context.getJobDetail().getJobDataMap().put("auctionPost", null);
             throw new JobExecutionException("AuctionPost does not exist: " + auctionUuid);
         }
 
-        context.getJobDetail().getJobDataMap().put("auctionPostExists", true);
+        context.getJobDetail().getJobDataMap().put("auctionPost", commandAuctionPostOpt.get());
         changeAuctionState(commandAuctionPostOpt.get());
     }
 
