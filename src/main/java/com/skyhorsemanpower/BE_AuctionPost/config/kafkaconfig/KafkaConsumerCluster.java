@@ -20,7 +20,7 @@ public class KafkaConsumerCluster {
 	private final AuctionPostService auctionPostService;
 
 	@KafkaListener(
-		topics = "auction-post-topic",
+		topics = "auction-post-donation-update-topic",
 		groupId = "${spring.kafka.group-id}"
 	)
 	public void updateDonationAuctionPost(
@@ -31,7 +31,7 @@ public class KafkaConsumerCluster {
 
 		UpdateTotalDonationUpdateVo updateTotalDonationUpdateVo = UpdateTotalDonationUpdateVo.builder()
 			.auctionUuid(message.get("auctionUuid").toString())
-			.totalDonationAmount(BigDecimal.valueOf((Integer) message.get("totalDonationAmount")))
+			.totalDonationAmount(new BigDecimal(message.get("donation").toString()))
 			.build();
 
 		log.info("consumer: success >>> updateTotalDonationUpdateVo: {}",
