@@ -9,9 +9,11 @@ import com.skyhorsemanpower.BE_AuctionPost.data.dto.AllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.AuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.CreateAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerAllAuctionPostDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.MainPagePostResponseDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerAllAuctionPostResponseVo;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.MainPagePostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.UpdateTotalDonationUpdateVo;
@@ -399,5 +401,44 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 			log.info("Update Total Donation Amount Error", e);
 			throw new CustomException(ResponseStatus.POSTGRESQL_ERROR);
 		}
+	}
+
+	@Override
+	public List<MainPagePostResponseVo> mainPagePost() {
+		List<MainPagePostResponseDto> mainPagePostResponseDtoList = new ArrayList<>();
+
+		List<ReadAuctionPost> result = new ArrayList<>();
+		result.addAll(
+			readAuctionPostRepository.findByState(AuctionStateEnum.AUCTION_IS_IN_PROGRESS.toString()));
+		result.addAll(readAuctionPostRepository.findByState(
+			AuctionStateEnum.BEFORE_AUCTION.toString()));
+
+		for (ReadAuctionPost readAuctionPost : result) {
+
+			String thumbnail = auctionImagesRepository.getThumbnailUrl(
+				readAuctionPost.getAuctionUuid());
+
+			mainPagePostResponseDtoList.add(MainPagePostResponseDto.builder()
+				.auctionUuid(readAuctionPost.getAuctionUuid())
+				.title(readAuctionPost.getTitle())
+				.eventStartTime(readAuctionPost.getEventStartTime())
+				.state(readAuctionPost.getState())
+				.thumbnail(thumbnail)
+				.build());
+		}
+
+		List<MainPagePostResponseVo> mainPagePostResponseVoList = new ArrayList<>();
+
+		for (MainPagePostResponseDto mainPagePostResponseDto : mainPagePostResponseDtoList) {
+			mainPagePostResponseVoList.add(MainPagePostResponseVo.builder()
+				.auctionUuid(mainPagePostResponseDto.getAuctionUuid())
+				.title(mainPagePostResponseDto.getTitle())
+				.eventStartTime(mainPagePostResponseDto.getEventStartTime())
+				.state(mainPagePostResponseDto.getState())
+				.thumbnail(mainPagePostResponseDto.getThumbnail())
+				.build());
+		}
+
+		return mainPagePostResponseVoList;
 	}
 }
