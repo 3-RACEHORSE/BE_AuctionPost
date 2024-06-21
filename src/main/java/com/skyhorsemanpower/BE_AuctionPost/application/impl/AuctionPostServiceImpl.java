@@ -90,6 +90,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 			.build();
 
 		producer.sendMessage(Topics.Constant.INITIAL_AUCTION, initialAuctionDto);
+//		producer.sendMessage(Topics.Constant.INITIAL_AUCTION, initialAuctionDto);
 	}
 
 	private void startAuctionJobSchedule(String auctionUuid, long auctionStartTime) {

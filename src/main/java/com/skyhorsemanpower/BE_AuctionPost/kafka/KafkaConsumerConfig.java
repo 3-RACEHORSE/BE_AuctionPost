@@ -1,4 +1,4 @@
-package com.skyhorsemanpower.BE_AuctionPost.config.kafkaconfig;
+package com.skyhorsemanpower.BE_AuctionPost.kafka;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class KafkaConsumerConfig {
 	@Value("${spring.kafka.bootstrap-servers}")
 	private String bootstrapServers;
 
-	@Value("${spring.kafka.group-id}")
+	@Value("${spring.kafka.consumer.group-id}")
 	private String groupId;
 
 	@Bean
