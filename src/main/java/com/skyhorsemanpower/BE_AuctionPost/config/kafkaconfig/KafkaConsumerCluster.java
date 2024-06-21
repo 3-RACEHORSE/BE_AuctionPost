@@ -20,7 +20,7 @@ public class KafkaConsumerCluster {
 	private final AuctionPostService auctionPostService;
 
 	@KafkaListener(
-		topics = "auction-post-donation-update-topic",
+		topics = Topics.Constant.AUCTION_POST_DONATION_UPDATE,
 		groupId = "${spring.kafka.group-id}"
 	)
 	public void updateDonationAuctionPost(
@@ -28,6 +28,11 @@ public class KafkaConsumerCluster {
 		@Headers MessageHeaders headers
 	) {
 		log.info("consumer: success >>> message: {}, headers: {}", message.toString(), headers);
+
+		if (message.get("auctionUuid") == null || message.get("donation") == null) {
+			log.error("auctionUuid or donation is null");
+			return;
+		}
 
 		UpdateTotalDonationUpdateVo updateTotalDonationUpdateVo = UpdateTotalDonationUpdateVo.builder()
 			.auctionUuid(message.get("auctionUuid").toString())
