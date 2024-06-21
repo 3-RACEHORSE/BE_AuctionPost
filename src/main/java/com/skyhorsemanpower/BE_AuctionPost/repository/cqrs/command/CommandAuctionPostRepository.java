@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommandAuctionPostRepository extends JpaRepository<CommandAuctionPost, Long> {
-	Optional<CommandAuctionPost> findByAuctionUuid(String auctionUuid);
+    Optional<CommandAuctionPost> findByAuctionUuid(String auctionUuid);
 }

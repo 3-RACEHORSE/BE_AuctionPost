@@ -49,11 +49,11 @@ public class GenerateRandom {
         return UUID.randomUUID().toString();
     }
 
-    public static String sellerUuid() {
+    public static String influencerUuid() {
         return UUID.randomUUID().toString();
     }
 
-    public static String sellerHandle() {
-        return String.format("@user-%s", string(9));
+    public static String adminUuid() {
+        return UUID.randomUUID().toString();
     }
 }
