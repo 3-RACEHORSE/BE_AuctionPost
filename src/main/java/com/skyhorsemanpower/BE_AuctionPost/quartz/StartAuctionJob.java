@@ -1,8 +1,10 @@
 package com.skyhorsemanpower.BE_AuctionPost.quartz;
 
+import com.skyhorsemanpower.BE_AuctionPost.common.DateTimeConverter;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.command.CommandAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.CommandAuctionPostRepository;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +30,11 @@ public class StartAuctionJob implements Job {
             throw new JobExecutionException("AuctionPost does not exist: " + auctionUuid);
         }
 
-        context.getJobDetail().getJobDataMap().put("auctionPost", commandAuctionPostOpt.get());
-        changeAuctionState(commandAuctionPostOpt.get());
+        CommandAuctionPost commandAuctionPost = commandAuctionPostOpt.get();
+        LocalDateTime auctionStartTimeLdt = DateTimeConverter.instantToLocalDateTime(commandAuctionPost.getAuctionStartTime());
+        if (auctionStartTimeLdt.isBefore(LocalDateTime.now()) || auctionStartTimeLdt.isEqual(LocalDateTime.now())) {
+            changeAuctionState(commandAuctionPostOpt.get());
+        }
     }
 
     private void changeAuctionState(CommandAuctionPost commandAuctionPost) {
