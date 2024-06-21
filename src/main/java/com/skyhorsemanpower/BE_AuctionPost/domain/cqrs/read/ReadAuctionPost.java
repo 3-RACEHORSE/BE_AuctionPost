@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 @NoArgsConstructor
 @Getter
@@ -18,43 +17,24 @@ public class ReadAuctionPost {
 
     @Id
     private String auctionPostId;
-    @Field(name = "auction_uuid")
     private String auctionUuid;
-    @Field(name = "admin_uuid")
     private String adminUuid;
-    @Field(name = "influencer_uuid")
     private String influencerUuid;
-    @Field(name = "influencer_name")
     private String influencerName;
-    @Field(name = "title")
     private String title;
-    @Field(name = "content")
     private String content;
-    @Field(name = "number_of_event_participants")
     private int numberOfEventParticipants;
-    @Field(name = "local_name")
     private String localName;
-    @Field(name = "event_place")
     private String eventPlace;
-    @Field(name = "event_start_time")
     private long eventStartTime;
-    @Field(name = "event_close_time")
     private long eventCloseTime;
-    @Field(name = "auction_start_time")
     private long auctionStartTime;
-    @Field(name = "auction_end_time")
     private long auctionEndTime;
-    @Field(name = "start_price")
     private String startPrice;
-    @Field(name = "increment_unit")
     private String incrementUnit;
-    @Field(name = "total_donation")
     private String totalDonation;
-    @Field(name = "state")
     private AuctionStateEnum state;
-    @Field(name = "created_at")
     private long createdAt;
-    @Field(name = "updated_at")
     private long updatedAt;
 
     @Builder

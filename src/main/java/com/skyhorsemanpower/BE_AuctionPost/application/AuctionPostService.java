@@ -7,6 +7,7 @@ import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionResponseVo;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.UpdateTotalDonationUpdateVo;
 
 public interface AuctionPostService {
     void createAuctionPost(CreateAuctionPostDto createAuctionPostDto);
@@ -16,4 +17,6 @@ public interface AuctionPostService {
     SearchAuctionResponseVo searchAuctionPost(SearchAuctionPostDto searchAuctionPostDto);
 
     InfluencerAllAuctionPostResponseVo influencerAuctionPost(InfluencerAllAuctionPostDto influencerAllAuctionPostDto);
+
+    void updateTotalDonationAmount(UpdateTotalDonationUpdateVo updateTotalDonationUpdateVo);
 }
