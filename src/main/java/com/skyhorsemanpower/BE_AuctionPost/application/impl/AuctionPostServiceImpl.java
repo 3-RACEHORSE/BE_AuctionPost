@@ -373,9 +373,9 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 
     @Override
     @Transactional
-    public void updateTotalDonationAmount(UpdateTotalDonationUpdateVo updateTotalDonationUpdateVo) {
+    public void updateTotalDonationAmount(AuctionTotalDonationVo auctionTotalDonationVo) {
         CommandAuctionPost auctionPost = commandAuctionPostRepository.findByAuctionUuid(
-                updateTotalDonationUpdateVo.getAuctionUuid()).orElseThrow(
+                auctionTotalDonationVo.getAuctionUuid()).orElseThrow(
                 () -> new CustomException(ResponseStatus.NO_DATA)
         );
         try {
@@ -397,7 +397,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                             .auctionEndTime(auctionPost.getAuctionEndTime())
                             .startPrice(auctionPost.getStartPrice())
                             .incrementUnit(auctionPost.getIncrementUnit())
-                            .totalDonation(updateTotalDonationUpdateVo.getTotalDonationAmount())
+                            .totalDonation(auctionTotalDonationVo.getDonation())
                             .state(auctionPost.getState())
                             .build()
             );
