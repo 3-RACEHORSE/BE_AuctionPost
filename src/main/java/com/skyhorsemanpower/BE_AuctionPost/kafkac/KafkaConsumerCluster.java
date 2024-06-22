@@ -1,9 +1,11 @@
 package com.skyhorsemanpower.BE_AuctionPost.kafkac;
 
 import com.skyhorsemanpower.BE_AuctionPost.application.AuctionPostService;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchForChatRoomVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.UpdateTotalDonationUpdateVo;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -42,5 +44,21 @@ public class KafkaConsumerCluster {
 			updateTotalDonationUpdateVo.toString());
 
 		auctionPostService.updateTotalDonationAmount(updateTotalDonationUpdateVo);
+	}
+
+	@KafkaListener(topics = "send-to-auction-for-create-chatroom-topic"
+	)
+	public void searchInformationForChat(@Payload LinkedHashMap<String, Object> message,
+		@Headers MessageHeaders messageHeaders) {
+		log.info("consumer: success >>> message: {}, headers: {}", message.toString(),
+			messageHeaders);
+		//message를 PaymentReadyVo로 변환
+		SearchForChatRoomVo searchForChatRoomVo = SearchForChatRoomVo.builder()
+			.auctionUuid(message.get("auctionUuid").toString())
+			.memberUuids((List<String>) message.get("memberUuids"))
+			.build();
+		log.info("auctionUuid : {}", searchForChatRoomVo.getAuctionUuid());
+		log.info("memberUuids : {}", searchForChatRoomVo.getMemberUuids());
+
 	}
 }
