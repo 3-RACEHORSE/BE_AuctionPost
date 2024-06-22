@@ -191,4 +191,22 @@ public class CustomReadAuctionPostRepositoryImpl implements CustomReadAuctionPos
         return SearchAuctionPostTitleAndInfluencerNameResponseVo.builder()
                 .result(result).build();
     }
+
+    @Override
+    public Page<ReadAuctionPost> findByState(String state, Pageable pageable) {
+
+        Criteria criteria = new Criteria();
+        criteria.and("state").is(state);
+
+        Query query = new Query(criteria).with(pageable)
+            .limit(pageable.getPageSize());
+
+        List<ReadAuctionPost> auctionPosts = mongoTemplate.find(query, ReadAuctionPost.class);
+
+        return PageableExecutionUtils.getPage(
+            auctionPosts,
+            pageable,
+            () -> mongoTemplate.count(query.skip(-1).limit(-1), ReadAuctionPost.class)
+        );
+    }
 }
