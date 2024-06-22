@@ -29,5 +29,8 @@ public interface AuctionPostService {
 
 	List<MainPagePostResponseVo> mainPagePost();
 
+	Boolean auctionState(String auctionUuid);
+
 	EventStartTimeDto updateStateByAuctionUuid(String auctionUuid, AuctionStateEnum state);
+
 }

@@ -457,6 +457,15 @@ public class AuctionPostServiceImpl implements AuctionPostService {
     }
 
     @Override
+    public Boolean auctionState(String auctionUuid) {
+        AuctionStateEnum auctionState = readAuctionPostRepository.findByAuctionUuid(auctionUuid).orElseThrow(
+                () -> new CustomException(ResponseStatus.NO_DATA)
+        ).getState();
+        log.info("Auction State >>> {}", auctionState);
+
+        return auctionState.equals(AuctionStateEnum.AUCTION_IS_IN_PROGRESS);
+
+    @Override
     public EventStartTimeDto updateStateByAuctionUuid(String auctionUuid, AuctionStateEnum state)  {
         Optional<CommandAuctionPost> commandAuctionPostOpt = commandAuctionPostRepository.findByAuctionUuid(auctionUuid);
 
