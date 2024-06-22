@@ -12,8 +12,8 @@ import lombok.ToString;
 @Builder
 @Getter
 @ToString
-public class UpdateTotalDonationUpdateVo {
+public class AuctionTotalDonationVo {
 
 	private String auctionUuid;
-	private BigDecimal totalDonationAmount;
+	private BigDecimal donation;
 }
