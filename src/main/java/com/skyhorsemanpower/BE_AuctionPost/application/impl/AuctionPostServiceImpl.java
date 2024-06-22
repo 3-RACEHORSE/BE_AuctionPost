@@ -17,7 +17,7 @@ import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerAllAuctionPostRespo
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.MainPagePostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionResponseVo;
-import com.skyhorsemanpower.BE_AuctionPost.data.vo.UpdateTotalDonationUpdateVo;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.AuctionTotalDonationVo;
 import com.skyhorsemanpower.BE_AuctionPost.domain.AuctionImages;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.command.CommandAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read.ReadAuctionPost;
@@ -372,9 +372,9 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 
 	@Override
 	@Transactional
-	public void updateTotalDonationAmount(UpdateTotalDonationUpdateVo updateTotalDonationUpdateVo) {
+	public void updateTotalDonationAmount(AuctionTotalDonationVo auctionTotalDonationVo) {
 		CommandAuctionPost auctionPost = commandAuctionPostRepository.findByAuctionUuid(
-			updateTotalDonationUpdateVo.getAuctionUuid()).orElseThrow(
+			auctionTotalDonationVo.getAuctionUuid()).orElseThrow(
 			() -> new CustomException(ResponseStatus.NO_DATA)
 		);
 		try {
@@ -396,7 +396,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 					.auctionEndTime(auctionPost.getAuctionEndTime())
 					.startPrice(auctionPost.getStartPrice())
 					.incrementUnit(auctionPost.getIncrementUnit())
-					.totalDonation(updateTotalDonationUpdateVo.getTotalDonationAmount())
+					.totalDonation(auctionTotalDonationVo.getDonation())
 					.state(auctionPost.getState())
 					.build()
 			);
