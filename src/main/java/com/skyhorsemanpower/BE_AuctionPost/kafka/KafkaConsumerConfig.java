@@ -1,4 +1,4 @@
-package com.skyhorsemanpower.BE_AuctionPost.kafkac;
+package com.skyhorsemanpower.BE_AuctionPost.kafka;
 
 import java.util.HashMap;
 import java.util.Map;

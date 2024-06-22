@@ -1,4 +1,4 @@
-package com.skyhorsemanpower.BE_AuctionPost.kafkac;
+package com.skyhorsemanpower.BE_AuctionPost.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
