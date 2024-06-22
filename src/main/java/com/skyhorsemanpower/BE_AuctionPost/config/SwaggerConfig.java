@@ -8,6 +8,7 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,7 +22,7 @@ import java.util.Arrays;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI openAPI() {
+    public OpenAPI openAPI(@Value("${openapi.service.url}") String url) {
         SecurityScheme securityScheme = new SecurityScheme().type(SecurityScheme.Type.HTTP)
                 .scheme("bearer").bearerFormat("JWT").in(SecurityScheme.In.HEADER)
                 .name("Authorization");
@@ -30,7 +31,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
                 .security(Arrays.asList(securityRequirement))
-                .addServersItem(new Server().url("/auctionpost-service"));
+                .addServersItem(new Server().url(url));
     }
 
 }

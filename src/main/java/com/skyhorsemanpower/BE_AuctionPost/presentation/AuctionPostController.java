@@ -10,6 +10,7 @@ import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
 import com.skyhorsemanpower.BE_AuctionPost.status.LocalNameEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -118,5 +119,12 @@ public class AuctionPostController {
                 changeAuctionPostStateRequestVo.getAuctionUuid(),
                 changeAuctionPostStateRequestVo.getState());
         return new SuccessResponse<>(null);
+    }
+
+    // 메인 페이지 경매글 리스트 조회
+    @GetMapping("/main")
+    @Operation(summary = "메인 페이지 경매글 리스트 조회", description = "메인 페이지 경매글 리스트 조회")
+    public SuccessResponse<List<MainPagePostResponseVo>> mainPageAuctionPost () {
+        return new SuccessResponse<>(auctionPostService.mainPagePost());
     }
 }
