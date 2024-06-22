@@ -1,4 +1,4 @@
-package com.skyhorsemanpower.BE_AuctionPost.config.kafkaconfig;
+package com.skyhorsemanpower.BE_AuctionPost.kafkac;
 
 import com.skyhorsemanpower.BE_AuctionPost.application.AuctionPostService;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.UpdateTotalDonationUpdateVo;

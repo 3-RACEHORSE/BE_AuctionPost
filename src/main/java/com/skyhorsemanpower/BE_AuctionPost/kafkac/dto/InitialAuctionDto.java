@@ -1,4 +1,4 @@
-package com.skyhorsemanpower.BE_AuctionPost.config.kafkaconfig.dto;
+package com.skyhorsemanpower.BE_AuctionPost.kafkac.dto;
 
 import lombok.Builder;
 import lombok.Getter;
