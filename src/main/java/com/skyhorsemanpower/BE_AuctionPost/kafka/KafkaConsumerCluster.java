@@ -65,5 +65,7 @@ public class KafkaConsumerCluster {
 		// 경매글 상태 갱신
 		readAuctionPostRepository.updateStateByAuctionUuid(
 				updateAuctionPostStateDto.getAuctionUuid(), updateAuctionPostStateDto.getAuctionState());
+
+		log.info("AuctionPost State update success!");
 	}
 }
