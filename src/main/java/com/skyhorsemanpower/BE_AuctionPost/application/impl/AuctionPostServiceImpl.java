@@ -5,7 +5,7 @@ import com.skyhorsemanpower.BE_AuctionPost.common.CustomException;
 import com.skyhorsemanpower.BE_AuctionPost.common.DateTimeConverter;
 import com.skyhorsemanpower.BE_AuctionPost.common.StringToBigDecimalConverter;
 import com.skyhorsemanpower.BE_AuctionPost.config.QuartzJobConfig;
-import com.skyhorsemanpower.BE_AuctionPost.config.kafkaconfig.Topics;
+import com.skyhorsemanpower.BE_AuctionPost.kafkac.Topics;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.AllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.AuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.CreateAuctionPostDto;
@@ -21,8 +21,8 @@ import com.skyhorsemanpower.BE_AuctionPost.data.vo.UpdateTotalDonationUpdateVo;
 import com.skyhorsemanpower.BE_AuctionPost.domain.AuctionImages;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.command.CommandAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read.ReadAuctionPost;
-import com.skyhorsemanpower.BE_AuctionPost.config.kafkaconfig.KafkaProducerCluster;
-import com.skyhorsemanpower.BE_AuctionPost.config.kafkaconfig.dto.InitialAuctionDto;
+import com.skyhorsemanpower.BE_AuctionPost.kafkac.KafkaProducerCluster;
+import com.skyhorsemanpower.BE_AuctionPost.kafkac.dto.InitialAuctionDto;
 import com.skyhorsemanpower.BE_AuctionPost.repository.AuctionImagesRepository;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.CommandAuctionPostRepository;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.read.ReadAuctionPostRepository;
@@ -57,7 +57,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 	private final CommandAuctionPostRepository commandAuctionPostRepository;
 	private final ReadAuctionPostRepository readAuctionPostRepository;
 	private final AuctionImagesRepository auctionImagesRepository;
-	private final QuartzConfig quartzConfig;
+	private final QuartzJobConfig quartzJobConfig;
 	private final KafkaProducerCluster producer;
 
 	@Override
@@ -96,7 +96,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 
 	private void startAuctionJobSchedule(String auctionUuid, long auctionStartTime) {
 		try {
-			quartzConfig.schedulerStartAuctionJob(auctionUuid, auctionStartTime);
+			quartzJobConfig.schedulerStartAuctionJob(auctionUuid, auctionStartTime);
 		} catch (SchedulerException e) {
 			log.info("Scheduler exception for auction UUID: {}", auctionUuid, e);
 			throw new CustomException(ResponseStatus.SCHEDULER_ERROR);
