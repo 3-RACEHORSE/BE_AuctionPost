@@ -1,8 +1,10 @@
 package com.skyhorsemanpower.BE_AuctionPost.quartz;
 
+import com.skyhorsemanpower.BE_AuctionPost.common.DateTimeConverter;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.command.CommandAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.CommandAuctionPostRepository;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,31 +30,33 @@ public class StartAuctionJob implements Job {
             throw new JobExecutionException("AuctionPost does not exist: " + auctionUuid);
         }
 
-        context.getJobDetail().getJobDataMap().put("auctionPost", commandAuctionPostOpt.get());
-        changeAuctionState(commandAuctionPostOpt.get());
+        CommandAuctionPost commandAuctionPost = commandAuctionPostOpt.get();
+        LocalDateTime auctionStartTimeLdt = DateTimeConverter.instantToLocalDateTime(commandAuctionPost.getAuctionStartTime());
+        if (auctionStartTimeLdt.isBefore(LocalDateTime.now()) || auctionStartTimeLdt.isEqual(LocalDateTime.now())) {
+            changeAuctionState(commandAuctionPostOpt.get());
+        }
     }
 
     private void changeAuctionState(CommandAuctionPost commandAuctionPost) {
         commandAuctionPostRepository.save(CommandAuctionPost.builder()
-                .auctionPostId(commandAuctionPost.getAuctionPostId())
-                .auctionUuid(commandAuctionPost.getAuctionUuid())
-                .auctionUuid(commandAuctionPost.getAuctionUuid())
-                .adminUuid(commandAuctionPost.getAdminUuid())
-                .influencerUuid(commandAuctionPost.getInfluencerUuid())
-                .influencerName(commandAuctionPost.getInfluencerName())
-                .title(commandAuctionPost.getTitle())
-                .content(commandAuctionPost.getContent())
-                .numberOfEventParticipants(commandAuctionPost.getNumberOfEventParticipants())
-                .localName(commandAuctionPost.getLocalName())
-                .eventPlace(commandAuctionPost.getEventPlace())
-                .eventStartTime(commandAuctionPost.getEventStartTime())
-                .eventCloseTime(commandAuctionPost.getEventCloseTime())
-                .auctionStartTime(commandAuctionPost.getAuctionStartTime())
-                .auctionEndTime(commandAuctionPost.getAuctionEndTime())
-                .startPrice(commandAuctionPost.getStartPrice())
-                .incrementUnit(commandAuctionPost.getIncrementUnit())
-                .totalDonation(commandAuctionPost.getTotalDonation())
-                .state(AuctionStateEnum.AUCTION_IS_IN_PROGRESS)
+            .auctionPostId(commandAuctionPost.getAuctionPostId())
+            .auctionUuid(commandAuctionPost.getAuctionUuid())
+            .adminUuid(commandAuctionPost.getAdminUuid())
+            .influencerUuid(commandAuctionPost.getInfluencerUuid())
+            .influencerName(commandAuctionPost.getInfluencerName())
+            .title(commandAuctionPost.getTitle())
+            .content(commandAuctionPost.getContent())
+            .numberOfEventParticipants(commandAuctionPost.getNumberOfEventParticipants())
+            .localName(commandAuctionPost.getLocalName())
+            .eventPlace(commandAuctionPost.getEventPlace())
+            .eventStartTime(commandAuctionPost.getEventStartTime())
+            .eventCloseTime(commandAuctionPost.getEventCloseTime())
+            .auctionStartTime(commandAuctionPost.getAuctionStartTime())
+            .auctionEndTime(commandAuctionPost.getAuctionEndTime())
+            .startPrice(commandAuctionPost.getStartPrice())
+            .incrementUnit(commandAuctionPost.getIncrementUnit())
+            .totalDonation(commandAuctionPost.getTotalDonation())
+            .state(AuctionStateEnum.AUCTION_IS_IN_PROGRESS)
             .build());
     }
 }
