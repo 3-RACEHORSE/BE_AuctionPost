@@ -6,6 +6,7 @@ import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionPostTitleDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionPostTitleAndInfluencerNameResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read.ReadAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,4 +18,6 @@ public interface CustomReadAuctionPostRepository {
     void updateStateByAuctionUuid(String auctionUuid, AuctionStateEnum state);
 
     SearchAuctionPostTitleAndInfluencerNameResponseVo getAuctionPostTitleAndInfluencerName(SearchAuctionPostTitleDto searchAuctionPostTitleDto);
+
+    Page<ReadAuctionPost> findByState(String state, Pageable pageable);
 }
