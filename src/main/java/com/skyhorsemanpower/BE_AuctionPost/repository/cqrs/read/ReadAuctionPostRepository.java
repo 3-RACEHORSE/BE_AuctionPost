@@ -14,12 +14,4 @@ public interface ReadAuctionPostRepository extends MongoRepository<ReadAuctionPo
 	CustomReadAuctionPostRepository {
 
 	Optional<ReadAuctionPost> findByAuctionUuid(String auctionUuid);
-
-//	@Query("{ 'state' : 'AUCTION_IS_IN_PROGRESS' }")
-//	List<ReadAuctionPost> findByProgressMainAuctionPosts();
-//
-//	@Query("{ 'state' : 'BEFORE_AUCTION' }")
-//	List<ReadAuctionPost> findByBeforeMainAuctionPosts();
-
-	List<ReadAuctionPost> findByState(String state);
 }
