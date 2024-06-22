@@ -9,6 +9,8 @@ import com.skyhorsemanpower.BE_AuctionPost.data.vo.MainPagePostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.AuctionTotalDonationVo;
+import com.skyhorsemanpower.BE_AuctionPost.kafka.dto.EventStartTimeDto;
+import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
 import java.util.List;
 
 public interface AuctionPostService {
@@ -26,4 +28,6 @@ public interface AuctionPostService {
 	void updateTotalDonationAmount(AuctionTotalDonationVo auctionTotalDonationVo);
 
 	List<MainPagePostResponseVo> mainPagePost();
+
+	EventStartTimeDto updateStateByAuctionUuid(String auctionUuid, AuctionStateEnum state);
 }
