@@ -26,4 +26,6 @@ public interface AuctionPostService {
 	void updateTotalDonationAmount(AuctionTotalDonationVo auctionTotalDonationVo);
 
 	List<MainPagePostResponseVo> mainPagePost();
+
+	Boolean auctionState(String auctionUuid);
 }

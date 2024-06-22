@@ -453,4 +453,14 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 
         return mainPagePostResponseVoList;
     }
+
+    @Override
+    public Boolean auctionState(String auctionUuid) {
+        AuctionStateEnum auctionState = readAuctionPostRepository.findByAuctionUuid(auctionUuid).orElseThrow(
+                () -> new CustomException(ResponseStatus.NO_DATA)
+        ).getState();
+        log.info("Auction State >>> {}", auctionState);
+
+        return auctionState.equals(AuctionStateEnum.AUCTION_IS_IN_PROGRESS);
+    }
 }
