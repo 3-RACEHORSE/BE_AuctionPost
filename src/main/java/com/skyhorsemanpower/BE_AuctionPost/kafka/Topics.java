@@ -11,7 +11,9 @@ public enum Topics {
     AUCTION_POST_SERVICE(Constant.AUCTION_POST_SERVICE),
     PAYMENT_SERVICE(Constant.PAYMENT_SERVICE),
     INITIAL_AUCTION(Constant.INITIAL_AUCTION),
-    AUCTION_CLOSE(Constant.AUCTION_CLOSE);
+    AUCTION_CLOSE(Constant.AUCTION_CLOSE),
+    AUCTION_POST_DONATION_UPDATE(Constant.AUCTION_POST_DONATION_UPDATE),
+    EVENT_START_TOPIC(Constant.EVENT_START_TOPIC)
     ;
 
     public static class Constant {
@@ -22,6 +24,7 @@ public enum Topics {
         public static final String AUCTION_POST_DONATION_UPDATE = "auction-post-donation-update-topic";
         public static final String INITIAL_AUCTION = "initial-auction-topic";
         public static final String AUCTION_CLOSE = "auction-close-topic";
+        public static final String EVENT_START_TOPIC = "event-start-topic";
     }
 
     private final String topic;
