@@ -1,4 +1,4 @@
-package com.skyhorsemanpower.BE_AuctionPost.config.kafkaconfig;
+package com.skyhorsemanpower.BE_AuctionPost.kafkac;
 
 import com.skyhorsemanpower.BE_AuctionPost.application.AuctionPostService;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.UpdateTotalDonationUpdateVo;
@@ -20,8 +20,7 @@ public class KafkaConsumerCluster {
 	private final AuctionPostService auctionPostService;
 
 	@KafkaListener(
-		topics = Topics.Constant.AUCTION_POST_DONATION_UPDATE,
-		groupId = "${spring.kafka.consumer.group-id}"
+		topics = Topics.Constant.AUCTION_POST_DONATION_UPDATE
 	)
 	public void updateDonationAuctionPost(
 		@Payload LinkedHashMap<String, Object> message,

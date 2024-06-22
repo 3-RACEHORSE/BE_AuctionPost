@@ -1,15 +1,11 @@
-package com.skyhorsemanpower.BE_AuctionPost.kafka.dto;
+package com.skyhorsemanpower.BE_AuctionPost.kafkac.dto;
 
-import com.skyhorsemanpower.BE_AuctionPost.data.dto.CreateAuctionPostDto;
-import com.skyhorsemanpower.BE_AuctionPost.status.AuctionEndTimeState;
-import com.skyhorsemanpower.BE_AuctionPost.status.TimeZoneChangeEnum;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Getter
 @ToString

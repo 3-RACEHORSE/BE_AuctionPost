@@ -1,4 +1,4 @@
-package com.skyhorsemanpower.BE_AuctionPost.kafka;
+package com.skyhorsemanpower.BE_AuctionPost.kafkac;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

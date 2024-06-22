@@ -1,61 +1,42 @@
 package com.skyhorsemanpower.BE_AuctionPost.config;
 
-import com.skyhorsemanpower.BE_AuctionPost.quartz.StartAuctionJob;
-import com.skyhorsemanpower.BE_AuctionPost.quartz.StartAuctionJobListener;
-import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.CommandAuctionPostRepository;
-import java.time.Instant;
-import java.util.Date;
+import java.util.Properties;
+import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SimpleScheduleBuilder;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
-import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.spi.JobFactory;
+import org.springframework.boot.autoconfigure.quartz.QuartzProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
 @Configuration
 @RequiredArgsConstructor
 public class QuartzConfig {
 
-    private final Scheduler scheduler;
-    private final CommandAuctionPostRepository commandAuctionPostRepository;
+    private final DataSource dataSource;
+    private final QuartzProperties quartzProperties;
+    private final ApplicationContext applicationContext;
 
     @Bean
-    public Scheduler scheduler() throws SchedulerException {
-        Scheduler scheduler = new StdSchedulerFactory().getScheduler();
-        scheduler.start();
-        return scheduler;
+    public JobFactory springBeanJobFactory() {
+        SpringBeanJobFactory jobFactory = new SpringBeanJobFactory();
+        jobFactory.setApplicationContext(applicationContext);
+        return jobFactory;
     }
 
-    public void schedulerStartAuctionJob(String auctionUuid, long auctionStartTime)
-        throws SchedulerException {
+    @Bean
+    public SchedulerFactoryBean schedulerFactoryBean(JobFactory jobFactory) {
+        Properties properties = new Properties();
+        properties.putAll(quartzProperties.getProperties());
 
-        JobDetail job = JobBuilder
-            .newJob(StartAuctionJob.class)
-            .withIdentity("StartAuctionJob_" + auctionUuid, "StartAuctionGroup")
-            .usingJobData("auctionUuid", auctionUuid)
-            .usingJobData("auctionStartTime", auctionStartTime)
-            .withDescription(
-                "Change the auction state when auction start at an auction start time.")
-            .build();
-
-        Trigger trigger = TriggerBuilder
-            .newTrigger()
-            .withIdentity("StartAuctionTrigger_" + auctionUuid, "StartAuctionGroup")
-            .withDescription("Trigger when auction start time.")
-            .startAt(Date.from(Instant.ofEpochMilli(auctionStartTime)))
-            .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                .withMisfireHandlingInstructionNextWithExistingCount().withRepeatCount(0))
-            .build();
-
-        StartAuctionJobListener startAuctionJobListener = new StartAuctionJobListener(commandAuctionPostRepository);
-        scheduler.getListenerManager()
-            .addJobListener(startAuctionJobListener);
-        scheduler.start();
-        scheduler.scheduleJob(job, trigger);
+        SchedulerFactoryBean factory = new SchedulerFactoryBean();
+        factory.setJobFactory(jobFactory);
+        factory.setDataSource(dataSource);
+        factory.setQuartzProperties(properties);
+        factory.setOverwriteExistingJobs(true);
+        factory.setWaitForJobsToCompleteOnShutdown(true);
+        return factory;
     }
 }

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -190,5 +191,25 @@ public class CustomReadAuctionPostRepositoryImpl implements CustomReadAuctionPos
 
         return SearchAuctionPostTitleAndInfluencerNameResponseVo.builder()
                 .result(result).build();
+    }
+
+    @Override
+    public Page<ReadAuctionPost> findByState(String state, Pageable pageable) {
+
+        Criteria criteria = new Criteria();
+        criteria.and("state").is(state);
+
+        Sort sort = Sort.by(Sort.Order.desc("createdAt"));
+
+        Query query = new Query(criteria).with(pageable)
+            .limit(pageable.getPageSize()).with(sort);
+
+        List<ReadAuctionPost> auctionPosts = mongoTemplate.find(query, ReadAuctionPost.class);
+
+        return PageableExecutionUtils.getPage(
+            auctionPosts,
+            pageable,
+            () -> mongoTemplate.count(query.skip(-1).limit(-1), ReadAuctionPost.class)
+        );
     }
 }

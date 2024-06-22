@@ -4,7 +4,8 @@ import com.skyhorsemanpower.BE_AuctionPost.application.AuctionPostService;
 import com.skyhorsemanpower.BE_AuctionPost.common.CustomException;
 import com.skyhorsemanpower.BE_AuctionPost.common.DateTimeConverter;
 import com.skyhorsemanpower.BE_AuctionPost.common.StringToBigDecimalConverter;
-import com.skyhorsemanpower.BE_AuctionPost.config.QuartzConfig;
+import com.skyhorsemanpower.BE_AuctionPost.config.QuartzJobConfig;
+import com.skyhorsemanpower.BE_AuctionPost.kafkac.Topics;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.AllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.AuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.CreateAuctionPostDto;
@@ -20,9 +21,8 @@ import com.skyhorsemanpower.BE_AuctionPost.data.vo.UpdateTotalDonationUpdateVo;
 import com.skyhorsemanpower.BE_AuctionPost.domain.AuctionImages;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.command.CommandAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read.ReadAuctionPost;
-import com.skyhorsemanpower.BE_AuctionPost.kafka.KafkaProducerCluster;
-import com.skyhorsemanpower.BE_AuctionPost.kafka.Topics;
-import com.skyhorsemanpower.BE_AuctionPost.kafka.dto.InitialAuctionDto;
+import com.skyhorsemanpower.BE_AuctionPost.kafkac.KafkaProducerCluster;
+import com.skyhorsemanpower.BE_AuctionPost.kafkac.dto.InitialAuctionDto;
 import com.skyhorsemanpower.BE_AuctionPost.repository.AuctionImagesRepository;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.CommandAuctionPostRepository;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.read.ReadAuctionPostRepository;
@@ -46,6 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +58,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 	private final CommandAuctionPostRepository commandAuctionPostRepository;
 	private final ReadAuctionPostRepository readAuctionPostRepository;
 	private final AuctionImagesRepository auctionImagesRepository;
-	private final QuartzConfig quartzConfig;
+	private final QuartzJobConfig quartzJobConfig;
 	private final KafkaProducerCluster producer;
 
 	@Override
@@ -96,7 +97,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 
 	private void startAuctionJobSchedule(String auctionUuid, long auctionStartTime) {
 		try {
-			quartzConfig.schedulerStartAuctionJob(auctionUuid, auctionStartTime);
+			quartzJobConfig.schedulerStartAuctionJob(auctionUuid, auctionStartTime);
 		} catch (SchedulerException e) {
 			log.info("Scheduler exception for auction UUID: {}", auctionUuid, e);
 			throw new CustomException(ResponseStatus.SCHEDULER_ERROR);
@@ -407,37 +408,45 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 	public List<MainPagePostResponseVo> mainPagePost() {
 		List<MainPagePostResponseDto> mainPagePostResponseDtoList = new ArrayList<>();
 
-		List<ReadAuctionPost> result = new ArrayList<>();
-		result.addAll(
-			readAuctionPostRepository.findByState(AuctionStateEnum.AUCTION_IS_IN_PROGRESS.toString()));
-		result.addAll(readAuctionPostRepository.findByState(
-			AuctionStateEnum.BEFORE_AUCTION.toString()));
+		Pageable limit = PageRequest.of(0, 10);
 
-		for (ReadAuctionPost readAuctionPost : result) {
+		Page<ReadAuctionPost> inProgress = readAuctionPostRepository.findByState(
+			AuctionStateEnum.AUCTION_IS_IN_PROGRESS.toString(), limit);
+		List<ReadAuctionPost> result = new ArrayList<>(inProgress.getContent());
 
-			String thumbnail = auctionImagesRepository.getThumbnailUrl(
-				readAuctionPost.getAuctionUuid());
-
-			mainPagePostResponseDtoList.add(MainPagePostResponseDto.builder()
-				.auctionUuid(readAuctionPost.getAuctionUuid())
-				.title(readAuctionPost.getTitle())
-				.eventStartTime(readAuctionPost.getEventStartTime())
-				.state(readAuctionPost.getState())
-				.thumbnail(thumbnail)
-				.build());
+		if (result.size() < 10) {
+			int remain = 10 - result.size();
+			Pageable remainLimit = PageRequest.of(0, remain);
+			result.addAll(readAuctionPostRepository.findByState(
+				AuctionStateEnum.BEFORE_AUCTION.toString(), remainLimit).getContent());
 		}
+
+		result.stream()
+			.map(readAuctionPost -> {
+				String thumbnail = auctionImagesRepository.getThumbnailUrl(
+					readAuctionPost.getAuctionUuid());
+				return MainPagePostResponseDto.builder()
+					.auctionUuid(readAuctionPost.getAuctionUuid())
+					.title(readAuctionPost.getTitle())
+					.eventStartTime(readAuctionPost.getEventStartTime())
+					.state(readAuctionPost.getState())
+					.thumbnail(thumbnail)
+					.build();
+			})
+			.forEach(mainPagePostResponseDtoList::add);
 
 		List<MainPagePostResponseVo> mainPagePostResponseVoList = new ArrayList<>();
 
-		for (MainPagePostResponseDto mainPagePostResponseDto : mainPagePostResponseDtoList) {
-			mainPagePostResponseVoList.add(MainPagePostResponseVo.builder()
-				.auctionUuid(mainPagePostResponseDto.getAuctionUuid())
-				.title(mainPagePostResponseDto.getTitle())
-				.eventStartTime(mainPagePostResponseDto.getEventStartTime())
-				.state(mainPagePostResponseDto.getState())
-				.thumbnail(mainPagePostResponseDto.getThumbnail())
-				.build());
-		}
+		mainPagePostResponseDtoList.stream()
+			.map(mainPagePostResponseDto ->
+				MainPagePostResponseVo.builder()
+					.auctionUuid(mainPagePostResponseDto.getAuctionUuid())
+					.title(mainPagePostResponseDto.getTitle())
+					.eventStartTime(mainPagePostResponseDto.getEventStartTime())
+					.state(mainPagePostResponseDto.getState())
+					.thumbnail(mainPagePostResponseDto.getThumbnail())
+					.build())
+			.forEach(mainPagePostResponseVoList::add);
 
 		return mainPagePostResponseVoList;
 	}
