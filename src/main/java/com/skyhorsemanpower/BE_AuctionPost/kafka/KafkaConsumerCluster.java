@@ -1,7 +1,7 @@
 package com.skyhorsemanpower.BE_AuctionPost.kafka;
 
 import com.skyhorsemanpower.BE_AuctionPost.application.AuctionPostService;
-import com.skyhorsemanpower.BE_AuctionPost.data.vo.UpdateTotalDonationUpdateVo;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.AuctionTotalDonationVo;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 
@@ -38,15 +38,15 @@ public class KafkaConsumerCluster {
 			return;
 		}
 
-		UpdateTotalDonationUpdateVo updateTotalDonationUpdateVo = UpdateTotalDonationUpdateVo.builder()
+		AuctionTotalDonationVo auctionTotalDonationVo = AuctionTotalDonationVo.builder()
 			.auctionUuid(message.get("auctionUuid").toString())
-			.totalDonationAmount(new BigDecimal(message.get("donation").toString()))
+			.donation(new BigDecimal(message.get("donation").toString()))
 			.build();
 
 		log.info("consumer: success >>> updateTotalDonationUpdateVo: {}",
-			updateTotalDonationUpdateVo.toString());
+			auctionTotalDonationVo.toString());
 
-		auctionPostService.updateTotalDonationAmount(updateTotalDonationUpdateVo);
+		auctionPostService.updateTotalDonationAmount(auctionTotalDonationVo);
 	}
 
 	@KafkaListener(topics = Topics.Constant.AUCTION_CLOSE, groupId = "${spring.kafka.consumer.group-id}")
