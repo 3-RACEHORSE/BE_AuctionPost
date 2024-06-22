@@ -22,6 +22,7 @@ import com.skyhorsemanpower.BE_AuctionPost.domain.AuctionImages;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.command.CommandAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read.ReadAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.kafka.KafkaProducerCluster;
+import com.skyhorsemanpower.BE_AuctionPost.kafka.dto.EventStartTimeDto;
 import com.skyhorsemanpower.BE_AuctionPost.kafka.dto.InitialAuctionDto;
 import com.skyhorsemanpower.BE_AuctionPost.repository.AuctionImagesRepository;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.CommandAuctionPostRepository;
@@ -41,6 +42,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
@@ -452,5 +454,41 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                 .forEach(mainPagePostResponseVoList::add);
 
         return mainPagePostResponseVoList;
+    }
+
+    @Override
+    public EventStartTimeDto updateStateByAuctionUuid(String auctionUuid, AuctionStateEnum state)  {
+        Optional<CommandAuctionPost> commandAuctionPostOpt = commandAuctionPostRepository.findByAuctionUuid(auctionUuid);
+
+        if (commandAuctionPostOpt.isPresent()) {
+            CommandAuctionPost auctionPost = commandAuctionPostOpt.get();
+            commandAuctionPostRepository.save(
+                CommandAuctionPost.builder()
+                    .auctionPostId(auctionPost.getAuctionPostId())
+                    .auctionUuid(auctionPost.getAuctionUuid())
+                    .adminUuid(auctionPost.getAdminUuid())
+                    .influencerUuid(auctionPost.getInfluencerUuid())
+                    .influencerName(auctionPost.getInfluencerName())
+                    .title(auctionPost.getTitle())
+                    .content(auctionPost.getContent())
+                    .numberOfEventParticipants(auctionPost.getNumberOfEventParticipants())
+                    .localName(auctionPost.getLocalName())
+                    .eventPlace(auctionPost.getEventPlace())
+                    .eventStartTime(auctionPost.getEventStartTime())
+                    .eventCloseTime(auctionPost.getEventCloseTime())
+                    .auctionStartTime(auctionPost.getAuctionStartTime())
+                    .auctionEndTime(auctionPost.getAuctionEndTime())
+                    .startPrice(auctionPost.getStartPrice())
+                    .incrementUnit(auctionPost.getIncrementUnit())
+                    .totalDonation(auctionPost.getTotalDonation())
+                    .state(state)
+                    .build()
+            );
+            return EventStartTimeDto.builder()
+                .auctionUuid(auctionUuid)
+                .eventStartTime(auctionPost.getEventStartTime())
+                .build();
+        }
+        return null;
     }
 }
