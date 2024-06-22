@@ -464,6 +464,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         log.info("Auction State >>> {}", auctionState);
 
         return auctionState.equals(AuctionStateEnum.AUCTION_IS_IN_PROGRESS);
+    }
 
     @Override
     public EventStartTimeDto updateStateByAuctionUuid(String auctionUuid, AuctionStateEnum state)  {
