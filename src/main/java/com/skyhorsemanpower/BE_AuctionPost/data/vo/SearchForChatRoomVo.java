@@ -1,6 +1,5 @@
 package com.skyhorsemanpower.BE_AuctionPost.data.vo;
 
-import com.skyhorsemanpower.chatService.chat.data.dto.BeforeChatRoomDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,10 +18,4 @@ public class SearchForChatRoomVo {
         this.memberUuids = memberUuids;
     }
 
-    public BeforeChatRoomDto toBeforeChatRoomDto() {
-        return BeforeChatRoomDto.builder()
-            .auctionUuid(this.auctionUuid)
-            .memberUuids(this.memberUuids)
-            .build();
-    }
 }

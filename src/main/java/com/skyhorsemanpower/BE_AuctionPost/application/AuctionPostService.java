@@ -8,6 +8,7 @@ import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerAllAuctionPostRespo
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.MainPagePostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionResponseVo;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchForChatRoomVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.UpdateTotalDonationUpdateVo;
 import java.util.List;
 
@@ -26,4 +27,6 @@ public interface AuctionPostService {
 	void updateTotalDonationAmount(UpdateTotalDonationUpdateVo updateTotalDonationUpdateVo);
 
 	List<MainPagePostResponseVo> mainPagePost();
+
+	void searchTitleAndThumbnail(SearchForChatRoomVo searchForChatRoomVo);
 }

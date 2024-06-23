@@ -5,6 +5,8 @@ import com.skyhorsemanpower.BE_AuctionPost.common.CustomException;
 import com.skyhorsemanpower.BE_AuctionPost.common.DateTimeConverter;
 import com.skyhorsemanpower.BE_AuctionPost.common.StringToBigDecimalConverter;
 import com.skyhorsemanpower.BE_AuctionPost.config.QuartzJobConfig;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.SearchAuctionForChatRoomDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchForChatRoomVo;
 import com.skyhorsemanpower.BE_AuctionPost.kafkac.Topics;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.AllAuctionPostDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.AuctionPostDto;
@@ -22,6 +24,7 @@ import com.skyhorsemanpower.BE_AuctionPost.domain.AuctionImages;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.command.CommandAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.read.ReadAuctionPost;
 import com.skyhorsemanpower.BE_AuctionPost.kafkac.KafkaProducerCluster;
+import com.skyhorsemanpower.BE_AuctionPost.kafkac.Topics.Constant;
 import com.skyhorsemanpower.BE_AuctionPost.kafkac.dto.InitialAuctionDto;
 import com.skyhorsemanpower.BE_AuctionPost.repository.AuctionImagesRepository;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.CommandAuctionPostRepository;
@@ -450,4 +453,37 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 
 		return mainPagePostResponseVoList;
 	}
+
+	@Override
+	public void searchTitleAndThumbnail(SearchForChatRoomVo searchForChatRoomVo) {
+		log.info("auctionUuid로 title, thumbnail 검색: {}", searchForChatRoomVo.getAuctionUuid());
+
+		try {
+			// Fetch auction post details
+			ReadAuctionPost readAuctionPost = readAuctionPostRepository.findByAuctionUuid(searchForChatRoomVo.getAuctionUuid())
+				.orElseThrow(() -> new CustomException(ResponseStatus.NO_DATA));
+
+			// Fetch thumbnail URL
+			log.info("조회하는 auctionUuid: {}",searchForChatRoomVo.getAuctionUuid());
+			String thumbnailUrl = auctionImagesRepository.getThumbnailUrl(searchForChatRoomVo.getAuctionUuid());
+
+			// Create DTO for chatroom
+			SearchAuctionForChatRoomDto searchAuctionForChatRoomDto = SearchAuctionForChatRoomDto.builder()
+				.auctionUuid(readAuctionPost.getAuctionUuid())
+				.title(readAuctionPost.getTitle())
+				.memberUuids(searchForChatRoomVo.getMemberUuids())
+				.adminUuid(readAuctionPost.getAdminUuid())
+				.thumbnail(thumbnailUrl)
+				.build();
+
+			// Send message
+			producer.sendMessage(Constant.SEND_TO_CHAT, searchAuctionForChatRoomDto);
+		} catch (CustomException e) {
+			log.error("CustomException: {}", e.getMessage());
+			// Optionally, handle specific actions for this exception
+		} catch (Exception e) {
+			log.error("Unexpected error occurred", e);
+		}
+	}
+
 }

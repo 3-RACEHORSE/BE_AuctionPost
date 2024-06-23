@@ -20,6 +20,7 @@ public enum Topics {
         public static final String PAYMENT_SERVICE = "event-preview-topic";
         public static final String AUCTION_POST_DONATION_UPDATE = "auction-post-donation-update-topic";
         public static final String INITIAL_AUCTION = "initial-auction-topic";
+        public static final String SEND_TO_CHAT = "send-to-chat-topic";
     }
 
     private final String topic;

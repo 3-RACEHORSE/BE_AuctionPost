@@ -46,8 +46,7 @@ public class KafkaConsumerCluster {
 		auctionPostService.updateTotalDonationAmount(updateTotalDonationUpdateVo);
 	}
 
-	@KafkaListener(topics = "send-to-auction-for-create-chatroom-topic"
-	)
+	@KafkaListener(topics = "send-to-auction-for-create-chatroom-topic")
 	public void searchInformationForChat(@Payload LinkedHashMap<String, Object> message,
 		@Headers MessageHeaders messageHeaders) {
 		log.info("consumer: success >>> message: {}, headers: {}", message.toString(),
@@ -59,6 +58,6 @@ public class KafkaConsumerCluster {
 			.build();
 		log.info("auctionUuid : {}", searchForChatRoomVo.getAuctionUuid());
 		log.info("memberUuids : {}", searchForChatRoomVo.getMemberUuids());
-
+		auctionPostService.searchTitleAndThumbnail(searchForChatRoomVo);
 	}
 }
