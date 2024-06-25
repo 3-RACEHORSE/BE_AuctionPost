@@ -1,10 +1,15 @@
-package com.skyhorsemanpower.BE_AuctionPost.kafkac;
+package com.skyhorsemanpower.BE_AuctionPost.kafka;
 
 import com.skyhorsemanpower.BE_AuctionPost.application.AuctionPostService;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.AuctionTotalDonationVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchForChatRoomVo;
-import com.skyhorsemanpower.BE_AuctionPost.data.vo.UpdateTotalDonationUpdateVo;
+import com.skyhorsemanpower.BE_AuctionPost.kafka.Topics.Constant;
+import com.skyhorsemanpower.BE_AuctionPost.kafka.dto.EventStartTimeDto;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
+
+import com.skyhorsemanpower.BE_AuctionPost.kafka.dto.UpdateAuctionPostStateDto;
+import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +25,7 @@ import org.springframework.stereotype.Component;
 public class KafkaConsumerCluster {
 
 	private final AuctionPostService auctionPostService;
+	private final KafkaProducerCluster producer;
 
 	@KafkaListener(
 		topics = Topics.Constant.AUCTION_POST_DONATION_UPDATE
@@ -35,15 +41,38 @@ public class KafkaConsumerCluster {
 			return;
 		}
 
-		UpdateTotalDonationUpdateVo updateTotalDonationUpdateVo = UpdateTotalDonationUpdateVo.builder()
+		AuctionTotalDonationVo auctionTotalDonationVo = AuctionTotalDonationVo.builder()
 			.auctionUuid(message.get("auctionUuid").toString())
-			.totalDonationAmount(new BigDecimal(message.get("donation").toString()))
+			.donation(new BigDecimal(message.get("donation").toString()))
 			.build();
 
 		log.info("consumer: success >>> updateTotalDonationUpdateVo: {}",
-			updateTotalDonationUpdateVo.toString());
+			auctionTotalDonationVo.toString());
 
-		auctionPostService.updateTotalDonationAmount(updateTotalDonationUpdateVo);
+		auctionPostService.updateTotalDonationAmount(auctionTotalDonationVo);
+	}
+
+	@KafkaListener(topics = Topics.Constant.AUCTION_CLOSE, groupId = "${spring.kafka.consumer.group-id}")
+	public void updateAuctionPostState(@Payload LinkedHashMap<String, Object> message,
+									   @Headers MessageHeaders messageHeaders) {
+
+		// 상태를 담고 있는 DTO 생성
+		UpdateAuctionPostStateDto updateAuctionPostStateDto = UpdateAuctionPostStateDto.builder()
+				.auctionUuid(message.get("auctionUuid").toString())
+				.auctionState(AuctionStateEnum.valueOf(message.get("auctionState").toString()))
+				.build();
+
+		// 경매글 상태 갱신
+		EventStartTimeDto eventStartTimeDto;
+		try {
+			eventStartTimeDto = auctionPostService.updateStateByAuctionUuid(
+				updateAuctionPostStateDto.getAuctionUuid(), updateAuctionPostStateDto.getAuctionState());
+		} catch (Exception e) {
+			log.error("updateAuctionPostState failed: {}", e.getMessage());
+			return;
+		}
+
+		producer.sendMessage(Constant.EVENT_START_TOPIC, eventStartTimeDto);
 	}
 
 	@KafkaListener(topics = "send-to-auction-for-create-chatroom-topic")

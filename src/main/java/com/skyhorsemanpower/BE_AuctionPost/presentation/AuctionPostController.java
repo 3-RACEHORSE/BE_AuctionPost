@@ -127,4 +127,13 @@ public class AuctionPostController {
     public SuccessResponse<List<MainPagePostResponseVo>> mainPageAuctionPost () {
         return new SuccessResponse<>(auctionPostService.mainPagePost());
     }
+
+    // 경매 입장에 사용되는 상태 조회
+    @GetMapping("/state/{auctionUuid}")
+    @Operation(summary = "경매 상태 조회", description = "경매 페이지 입장에 사용되는 경매 상태 조회 API")
+    public SuccessResponse<Boolean> auctionState (
+            @PathVariable("auctionUuid") String auctionUuid) {
+        return new SuccessResponse<>(auctionPostService.auctionState(auctionUuid));
+    }
+
 }
