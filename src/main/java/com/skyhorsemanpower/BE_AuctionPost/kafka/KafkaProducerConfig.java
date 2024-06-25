@@ -38,8 +38,8 @@ public class KafkaProducerConfig {
     @Bean
     public NewTopic initialAuctionTopic() {
         return TopicBuilder.name(Topics.Constant.INITIAL_AUCTION)
-                .partitions(1)
-                .replicas(1)
+                .partitions(2)
+                .replicas(2)
                 .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(172800000))
                 .build();
     }
@@ -47,8 +47,8 @@ public class KafkaProducerConfig {
     @Bean
     public NewTopic sendToChatTopic() {
         return TopicBuilder.name(Topics.Constant.SEND_TO_CHAT)
-                .partitions(1)
-                .replicas(1)
+                .partitions(2)
+                .replicas(2)
                 .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(172800000))
                 .build();
     }
@@ -56,8 +56,8 @@ public class KafkaProducerConfig {
     @Bean
     public NewTopic eventStartTopic() {
         return TopicBuilder.name(Topics.Constant.EVENT_START_TOPIC)
-                .partitions(1)
-                .replicas(1)
+                .partitions(2)
+                .replicas(2)
                 .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(172800000))
                 .build();
     }
