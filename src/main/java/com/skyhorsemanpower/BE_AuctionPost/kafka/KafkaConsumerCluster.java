@@ -75,7 +75,7 @@ public class KafkaConsumerCluster {
 		producer.sendMessage(Constant.EVENT_START_TOPIC, eventStartTimeDto);
 	}
 
-	@KafkaListener(topics = "send-to-auction-for-create-chatroom-topic")
+	@KafkaListener(topics = Constant.SEND_TO_AUCTION_FOR_CREATE_CHATROOM_TOPIC)
 	public void searchInformationForChat(@Payload LinkedHashMap<String, Object> message,
 		@Headers MessageHeaders messageHeaders) {
 		log.info("consumer: success >>> message: {}, headers: {}", message.toString(),
