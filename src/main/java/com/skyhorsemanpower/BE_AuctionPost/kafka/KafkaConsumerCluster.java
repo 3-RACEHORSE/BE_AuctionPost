@@ -2,6 +2,7 @@ package com.skyhorsemanpower.BE_AuctionPost.kafka;
 
 import com.skyhorsemanpower.BE_AuctionPost.application.AuctionPostService;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.AuctionTotalDonationVo;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchForChatRoomVo;
 import com.skyhorsemanpower.BE_AuctionPost.kafka.Topics.Constant;
 import com.skyhorsemanpower.BE_AuctionPost.kafka.dto.EventStartTimeDto;
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ import java.util.LinkedHashMap;
 
 import com.skyhorsemanpower.BE_AuctionPost.kafka.dto.UpdateAuctionPostStateDto;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -71,5 +73,20 @@ public class KafkaConsumerCluster {
 		}
 
 		producer.sendMessage(Constant.EVENT_START_TOPIC, eventStartTimeDto);
+	}
+
+	@KafkaListener(topics = Constant.SEND_TO_AUCTION_FOR_CREATE_CHATROOM_TOPIC)
+	public void searchInformationForChat(@Payload LinkedHashMap<String, Object> message,
+		@Headers MessageHeaders messageHeaders) {
+		log.info("consumer: success >>> message: {}, headers: {}", message.toString(),
+			messageHeaders);
+		//message를 PaymentReadyVo로 변환
+		SearchForChatRoomVo searchForChatRoomVo = SearchForChatRoomVo.builder()
+			.auctionUuid(message.get("auctionUuid").toString())
+			.memberUuids((List<String>) message.get("memberUuids"))
+			.build();
+		log.info("auctionUuid : {}", searchForChatRoomVo.getAuctionUuid());
+		log.info("memberUuids : {}", searchForChatRoomVo.getMemberUuids());
+		auctionPostService.searchTitleAndThumbnail(searchForChatRoomVo);
 	}
 }

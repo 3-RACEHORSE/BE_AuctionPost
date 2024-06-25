@@ -82,7 +82,8 @@ public class CustomReadAuctionPostRepositoryImpl implements CustomReadAuctionPos
 
         Query query = new Query(criteria).with(pageable)
                 .skip(pageable.getPageSize() * pageable.getPageNumber())
-                .limit(pageable.getPageSize());
+                .limit(pageable.getPageSize())
+                .with(Sort.by(Sort.Order.desc("auctionStartTime"))); // auctionStartTime 내림차순 정렬
 
         log.info("Qeury >>> {}", query);
 
@@ -96,7 +97,8 @@ public class CustomReadAuctionPostRepositoryImpl implements CustomReadAuctionPos
     }
 
     @Override
-    public Page<ReadAuctionPost> findAllInfluencerAuctionPost(InfluencerAllAuctionPostDto influencerAllAuctionPostDto, Pageable pageable) {
+    public Page<ReadAuctionPost> findAllInfluencerAuctionPost(
+            InfluencerAllAuctionPostDto influencerAllAuctionPostDto, Pageable pageable) {
         log.info("SearchAllAuctionDto >>> {}", influencerAllAuctionPostDto.toString());
 
         Criteria criteria = new Criteria();
@@ -122,7 +124,8 @@ public class CustomReadAuctionPostRepositoryImpl implements CustomReadAuctionPos
 
         Query query = new Query(criteria).with(pageable)
                 .skip(pageable.getPageSize() * pageable.getPageNumber())
-                .limit(pageable.getPageSize());
+                .limit(pageable.getPageSize())
+                .with(Sort.by(Sort.Order.desc("auctionStartTime"))); // auctionStartTime 내림차순 정렬
 
         log.info("Qeury >>> {}", query);
 
