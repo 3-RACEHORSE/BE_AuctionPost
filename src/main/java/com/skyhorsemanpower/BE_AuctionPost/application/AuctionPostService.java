@@ -8,6 +8,7 @@ import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerAllAuctionPostRespo
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.MainPagePostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAllAuctionPostResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchAuctionResponseVo;
+import com.skyhorsemanpower.BE_AuctionPost.data.vo.SearchForChatRoomVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.AuctionTotalDonationVo;
 import com.skyhorsemanpower.BE_AuctionPost.kafka.dto.EventStartTimeDto;
 import com.skyhorsemanpower.BE_AuctionPost.status.AuctionStateEnum;
@@ -29,6 +30,7 @@ public interface AuctionPostService {
 
 	List<MainPagePostResponseVo> mainPagePost();
 
+	void searchTitleAndThumbnail(SearchForChatRoomVo searchForChatRoomVo);
 	Boolean auctionState(String auctionUuid);
 
 	EventStartTimeDto updateStateByAuctionUuid(String auctionUuid, AuctionStateEnum state);
