@@ -463,15 +463,14 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 		log.info("auctionUuid로 title, thumbnail 검색: {}", searchForChatRoomVo.getAuctionUuid());
 
 		try {
-			// Fetch auction post details
 			ReadAuctionPost readAuctionPost = readAuctionPostRepository.findByAuctionUuid(searchForChatRoomVo.getAuctionUuid())
 				.orElseThrow(() -> new CustomException(ResponseStatus.NO_DATA));
 
-			// Fetch thumbnail URL
 			log.info("조회하는 auctionUuid: {}",searchForChatRoomVo.getAuctionUuid());
 			String thumbnailUrl = auctionImagesRepository.getThumbnailUrl(searchForChatRoomVo.getAuctionUuid());
+            log.info("thumbnail: {}", thumbnailUrl);
+            log.info("title: {}", readAuctionPost.getTitle());
 
-			// Create DTO for chatroom
 			SearchAuctionForChatRoomDto searchAuctionForChatRoomDto = SearchAuctionForChatRoomDto.builder()
 				.auctionUuid(readAuctionPost.getAuctionUuid())
 				.title(readAuctionPost.getTitle())
@@ -481,7 +480,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
 				.build();
 
 			// Send message
-			producer.sendMessage(Constant.SEND_TO_CHAT, searchAuctionForChatRoomDto);
+			producer.sendMessage(Constant.SEND_TO_MEMBER_FOR_CREATE_CHATROOM_TOPIC, searchAuctionForChatRoomDto);
 		} catch (CustomException e) {
 			log.error("CustomException: {}", e.getMessage());
 			// Optionally, handle specific actions for this exception
