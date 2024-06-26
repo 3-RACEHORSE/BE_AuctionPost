@@ -1,10 +1,14 @@
 package com.skyhorsemanpower.BE_AuctionPost.kafka;
 
+import com.skyhorsemanpower.BE_AuctionPost.kafka.Topics.Constant;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -30,5 +34,14 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, Object> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
+    }
+
+    @Bean
+    public NewTopic memberTopic() {
+        return TopicBuilder.name(Constant.SEND_TO_MEMBER_FOR_CREATE_CHATROOM_TOPIC)
+            .partitions(2)
+            .replicas(2)
+            .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(86400000)) // 1일 (24시간) = 86400000 밀리초
+            .build();
     }
 }
