@@ -38,10 +38,27 @@ public class KafkaProducerConfig {
 
     @Bean
     public NewTopic memberTopic() {
-        return TopicBuilder.name(Constant.SEND_TO_MEMBER_FOR_CREATE_CHATROOM_TOPIC)
+        return TopicBuilder.name(Topics.Constant.SEND_TO_MEMBER_FOR_CREATE_CHATROOM_TOPIC)
             .partitions(2)
             .replicas(2)
             .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(86400000)) // 1일 (24시간) = 86400000 밀리초
             .build();
+      
+    @Bean
+    public NewTopic initialAuctionTopic() {
+        return TopicBuilder.name(Topics.Constant.INITIAL_AUCTION)
+                .partitions(2)
+                .replicas(2)
+                .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(172800000))
+                .build();
+    }
+
+    @Bean
+    public NewTopic eventStartTopic() {
+        return TopicBuilder.name(Topics.Constant.EVENT_START_TOPIC)
+                .partitions(2)
+                .replicas(2)
+                .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(172800000))
+                .build();
     }
 }
