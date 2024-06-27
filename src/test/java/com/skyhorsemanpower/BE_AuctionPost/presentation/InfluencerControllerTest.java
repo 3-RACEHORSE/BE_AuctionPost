@@ -58,16 +58,11 @@ class InfluencerControllerTest {
                 .influencerUuids(influencerUuids)
                 .build())).thenReturn(influencerSummaryDtos);
 
-        String request = """
-                {
-                    "influencerUuids": ["influencer1", "influencer2", "influencer3"]
-                }
-            """;
+        String request = "?influencerUuids=influencer1,influencer2,influencer3";
 
-        MvcResult result = mockMvc.perform(get("/api/v1/influencer/summarise")
+        MvcResult result = mockMvc.perform(get("/api/v1/influencer/summarise" + request)
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(request))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andReturn();
 

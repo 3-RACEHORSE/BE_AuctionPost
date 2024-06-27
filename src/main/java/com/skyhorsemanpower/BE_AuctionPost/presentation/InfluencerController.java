@@ -10,7 +10,6 @@ import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerSummaryDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerAddRequestVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerDetailResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerSearchResponseVo;
-import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerSummariesRequestVo;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,9 +68,9 @@ public class InfluencerController {
     @GetMapping("/summarise")
     @Operation(summary = "인플루언서 리스트 조회", description = "influencerUuid 리스트를 받아 해당 인플루언서들의 이름, 프로필 사진을 리스트에 담아 반환합니다.")
     public SuccessResponse<List<InfluencerSummaryDto>> findInfluencers(
-        @RequestBody InfluencerSummariesRequestVo influencerSummariesRequestVo
+        @RequestParam String influencerUuids
     ) {
         return new SuccessResponse<>(influencerService.getInfluencerSummaries(
-            InfluencerSummariesRequestDto.voToDto(influencerSummariesRequestVo)));
+            InfluencerSummariesRequestDto.queryParamToDto(influencerUuids)));
     }
 }

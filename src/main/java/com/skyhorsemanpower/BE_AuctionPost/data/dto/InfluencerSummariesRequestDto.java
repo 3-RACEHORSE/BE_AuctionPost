@@ -1,6 +1,6 @@
 package com.skyhorsemanpower.BE_AuctionPost.data.dto;
 
-import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerSummariesRequestVo;
+import java.util.Arrays;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,9 +13,10 @@ public class InfluencerSummariesRequestDto {
 
     private List<String> influencerUuids;
 
-    public static InfluencerSummariesRequestDto voToDto(InfluencerSummariesRequestVo vo) {
+    public static InfluencerSummariesRequestDto queryParamToDto(String influencerUuidsQueryParam) {
+        List<String> influencerUuids = Arrays.asList(influencerUuidsQueryParam.split(","));
         return InfluencerSummariesRequestDto.builder()
-            .influencerUuids(vo.getInfluencerUuids())
+            .influencerUuids(influencerUuids)
             .build();
     }
 }
