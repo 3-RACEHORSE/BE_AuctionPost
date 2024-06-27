@@ -54,6 +54,7 @@ public class InfluencerServiceImpl implements InfluencerService {
 			.name(influencerAddRequestDto.getName())
 			.phoneNum(influencerAddRequestDto.getPhoneNum())
 			.profileImage(influencerAddRequestDto.getProfileImage())
+			.birthDate(influencerAddRequestDto.getBirth())
 			.description(influencerAddRequestDto.getDescription())
 			.build();
 
