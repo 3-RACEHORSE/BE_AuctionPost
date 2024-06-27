@@ -5,10 +5,13 @@ import com.skyhorsemanpower.BE_AuctionPost.common.CustomException;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerAddRequestDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerDetailResponseDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerSearchResponseDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerSummariesRequestDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerSummaryDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerUpdateRequestDto;
 import com.skyhorsemanpower.BE_AuctionPost.domain.cqrs.command.Influencer;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.InfluencerRepository;
 import com.skyhorsemanpower.BE_AuctionPost.status.ResponseStatus;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
@@ -110,5 +113,23 @@ public class InfluencerServiceImpl implements InfluencerService {
 				.profileImage(influencer.getProfileImage())
 				.build())
 			.toList();
+	}
+
+	@Override
+	public List<InfluencerSummaryDto> getInfluencerSummaries(
+		InfluencerSummariesRequestDto influencerSummariesRequestDto) {
+
+		List<Influencer> influencers = influencerRepository.findByUuidIn(influencerSummariesRequestDto.getInfluencerUuids());
+
+		if (influencers.isEmpty()) {
+			return List.of();
+		}
+
+		return influencers.stream().map(influencer ->
+				InfluencerSummaryDto.builder()
+					.name(influencer.getName())
+					.profileImage(influencer.getProfileImage())
+					.build()
+			).toList();
 	}
 }

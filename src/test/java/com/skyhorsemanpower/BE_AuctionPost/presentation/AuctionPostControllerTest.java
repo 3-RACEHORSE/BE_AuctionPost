@@ -1,12 +1,12 @@
-package com.skyhorsemanpower.BE_AuctionPost;
+package com.skyhorsemanpower.BE_AuctionPost.presentation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.skyhorsemanpower.BE_AuctionPost.GenerateRandom;
 import com.skyhorsemanpower.BE_AuctionPost.application.AuctionPostService;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.CreateAuctionPostDto;
-import com.skyhorsemanpower.BE_AuctionPost.presentation.AuctionPostController;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.read.ReadAuctionPostRepository;
 import java.math.BigDecimal;
 import java.util.List;
@@ -85,7 +85,8 @@ class AuctionPostControllerTest {
                 .content(request))
             .andExpect(status().isOk());
 
-        ArgumentCaptor<CreateAuctionPostDto> captor = ArgumentCaptor.forClass(CreateAuctionPostDto.class);
+        ArgumentCaptor<CreateAuctionPostDto> captor = ArgumentCaptor.forClass(
+            CreateAuctionPostDto.class);
         Mockito.verify(auctionPostService).createAuctionPost(captor.capture());
 
         CreateAuctionPostDto capturedDto = captor.getValue();
@@ -101,7 +102,8 @@ class AuctionPostControllerTest {
         assertEquals(1718854200000L, capturedDto.getAuctionStartTime());
         assertEquals(BigDecimal.valueOf(10000), capturedDto.getStartPrice());
         assertEquals(BigDecimal.valueOf(1000), capturedDto.getIncrementUnit());
-        assertEquals("https://newsimg.sedaily.com/2023/11/15/29X8V5WK5F_1.jpg", capturedDto.getThumbnail());
+        assertEquals("https://newsimg.sedaily.com/2023/11/15/29X8V5WK5F_1.jpg",
+            capturedDto.getThumbnail());
         assertEquals(images, capturedDto.getImages());
     }
 
