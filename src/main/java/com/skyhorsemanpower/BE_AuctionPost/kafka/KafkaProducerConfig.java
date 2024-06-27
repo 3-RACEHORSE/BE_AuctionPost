@@ -1,6 +1,7 @@
 package com.skyhorsemanpower.BE_AuctionPost.kafka;
 
-import com.skyhorsemanpower.BE_AuctionPost.kafka.Topics.Constant;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.TopicConfig;
@@ -14,47 +15,45 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Configuration
 public class KafkaProducerConfig {
-    @Value("${spring.kafka.bootstrap-servers}")
-    private String bootstrapAddress;
 
-    @Bean
-    public ProducerFactory<String, Object> producerFactory() {
-        Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return new DefaultKafkaProducerFactory<>(configProps);
-    }
+	@Value("${spring.kafka.bootstrap-servers}")
+	private String bootstrapAddress;
 
-    @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
-    }
+	@Bean
+	public ProducerFactory<String, Object> producerFactory() {
+		Map<String, Object> configProps = new HashMap<>();
+		configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+		configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+		configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+		return new DefaultKafkaProducerFactory<>(configProps);
+	}
 
-    @Bean
-    public NewTopic memberTopic() {
-        return TopicBuilder.name(Topics.Constant.SEND_TO_MEMBER_FOR_CREATE_CHATROOM_TOPIC)
-            .config(TopicConfig.RETENTION_MS_CONFIG,
-                String.valueOf(86400000)) // 1일 (24시간) = 86400000 밀리초
-            .build();
-    }
+	@Bean
+	public KafkaTemplate<String, Object> kafkaTemplate() {
+		return new KafkaTemplate<>(producerFactory());
+	}
 
-    @Bean
-    public NewTopic initialAuctionTopic() {
-        return TopicBuilder.name(Topics.Constant.INITIAL_AUCTION)
-                .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(172800000))
-                .build();
-    }
+	@Bean
+	public NewTopic memberTopic() {
+		return TopicBuilder.name(Topics.Constant.SEND_TO_MEMBER_FOR_CREATE_CHATROOM_TOPIC)
+			.config(TopicConfig.RETENTION_MS_CONFIG,
+				String.valueOf(86400000)) // 1일 (24시간) = 86400000 밀리초
+			.build();
+	}
 
-    @Bean
-    public NewTopic eventStartTopic() {
-        return TopicBuilder.name(Topics.Constant.EVENT_START_TOPIC)
-                .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(172800000))
-                .build();
-    }
+	@Bean
+	public NewTopic initialAuctionTopic() {
+		return TopicBuilder.name(Topics.Constant.INITIAL_AUCTION)
+			.config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(172800000))
+			.build();
+	}
+
+	@Bean
+	public NewTopic eventStartTopic() {
+		return TopicBuilder.name(Topics.Constant.EVENT_START_TOPIC)
+			.config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(172800000))
+			.build();
+	}
 }
