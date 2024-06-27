@@ -20,4 +20,6 @@ public interface InfluencerRepository extends JpaRepository<Influencer, Long> {
 		LocalDate birthDate);
 
 	List<Influencer> findByNameContaining(String name);
+
+	List<Influencer> findByUuidIn(List<String> influencerUuids);
 }

@@ -3,6 +3,8 @@ package com.skyhorsemanpower.BE_AuctionPost.application;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerAddRequestDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerDetailResponseDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerSearchResponseDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerSummariesRequestDto;
+import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerSummaryDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerUpdateRequestDto;
 import java.util.List;
 
@@ -17,4 +19,6 @@ public interface InfluencerService {
 	void removeInfluencer(String influencerUuid);
 
 	List<InfluencerSearchResponseDto> searchInfluencer(String name);
+
+	List<InfluencerSummaryDto> getInfluencerSummaries(InfluencerSummariesRequestDto influencerSummariesRequestDto);
 }
