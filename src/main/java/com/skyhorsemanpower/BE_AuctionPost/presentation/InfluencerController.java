@@ -40,7 +40,7 @@ public class InfluencerController {
 
     @GetMapping
     public SuccessResponse<InfluencerDetailResponseVo> findInfluencer(
-        @RequestParam("influencerId") String influencerUuid) {
+        @RequestParam("influencerUuid") String influencerUuid) {
         return new SuccessResponse<>(
             InfluencerDetailResponseDto.dtoToVo(influencerService.findInfluencer(influencerUuid)));
     }
