@@ -89,35 +89,46 @@ public class InfluencerTest {
         InfluencerSummariesRequestDto influencerSummariesRequestDto = InfluencerSummariesRequestDto.builder()
             .influencerUuids(influencerUuids).build();
 
-        Influencer influencer1 = Influencer.builder()
-            .name("장원영")
-            .profileImage("https://jwy.png")
-            .phoneNum("010-1234-5678")
-            .birthDate(LocalDate.of(2004, 8, 31))
-            .description("공주")
-            .build();
-        Influencer influencer2 = Influencer.builder()
-            .name("카리나")
-            .profileImage("https://karina.png")
-            .phoneNum("010-1234-5678")
-            .birthDate(LocalDate.of(2000, 4, 11))
-            .description("여신")
-            .build();
-        Influencer influencer3 = Influencer.builder()
-            .name("설윤")
-            .profileImage("https://sy.png")
-            .phoneNum("010-1234-5678")
-            .birthDate(LocalDate.of(2004, 1, 26))
-            .description("요정")
-            .build();
+        List<Influencer> influencers = List.of(
+            Influencer.builder()
+                .name("장원영")
+                .profileImage("https://jwy.png")
+                .phoneNum("010-1234-5678")
+                .birthDate(LocalDate.of(2004, 8, 31))
+                .description("공주")
+                .build(),
+            Influencer.builder()
+                .name("카리나")
+                .profileImage("https://karina.png")
+                .phoneNum("010-1234-5678")
+                .birthDate(LocalDate.of(2000, 4, 11))
+                .description("여신")
+                .build(),
+            Influencer.builder()
+                .name("설윤")
+                .profileImage("https://sy.png")
+                .phoneNum("010-1234-5678")
+                .birthDate(LocalDate.of(2004, 1, 26))
+                .description("요정")
+                .build()
+        );
 
-        Mockito.when(influencerRepository.findByUuidIn(influencerUuids)).thenReturn(List.of(
-            influencer1, influencer2, influencer3
-        ));
+        Mockito.when(influencerRepository.findByUuidIn(influencerUuids)).thenReturn(influencers);
 
         List<InfluencerSummaryDto> influencerSummaryDtos = influencerService.getInfluencerSummaries(
             influencerSummariesRequestDto);
 
         assertThat(influencerSummaryDtos.size()).isEqualTo(influencerUuids.size());
+
+        for (int i = 0; i < influencerSummaryDtos.size(); i++) {
+            InfluencerSummaryDto influencerSummaryDto = influencerSummaryDtos.get(i);
+            assertThat(influencerSummaryDto.getName()).isEqualTo(influencers.get(i).getName());
+            assertThat(influencerSummaryDto.getProfileImage()).isEqualTo(
+                influencers.get(i).getProfileImage());
+            assertThat(influencerSummaryDto.getBirthDate()).isEqualTo(
+                influencers.get(i).getBirthDate());
+            assertThat(influencerSummaryDto.getDescription()).isEqualTo(
+                influencers.get(i).getDescription());
+        }
     }
 }
