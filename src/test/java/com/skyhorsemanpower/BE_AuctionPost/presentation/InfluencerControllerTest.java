@@ -10,6 +10,7 @@ import com.skyhorsemanpower.BE_AuctionPost.application.InfluencerService;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerSummariesRequestDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerSummaryDto;
 import com.skyhorsemanpower.BE_AuctionPost.repository.cqrs.command.InfluencerRepository;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class InfluencerControllerTest {
     private InfluencerRepository influencerRepository;
 
     @Test
-    @DisplayName("인플루언서 uuid리스트로 조회 요청시 이름과 프로필사진이 담긴 리스트를 반환한다.")
+    @DisplayName("인플루언서 uuid리스트로 조회 요청시 인플루언서 정보가 담긴 리스트를 반환한다.")
     void findInfluencersTest() throws Exception {
         List<String> influencerUuids = List.of("influencer1", "influencer2", "influencer3");
 
@@ -42,14 +43,20 @@ class InfluencerControllerTest {
             InfluencerSummaryDto.builder()
                 .name("장원영")
                 .profileImage("https://jwy.png")
+                .birthDate(LocalDate.of(2004, 8, 31))
+                .description("공주")
                 .build(),
             InfluencerSummaryDto.builder()
                 .name("카리나")
                 .profileImage("https://karina.png")
+                .birthDate(LocalDate.of(2000, 4, 11))
+                .description("여신")
                 .build(),
             InfluencerSummaryDto.builder()
                 .name("설윤")
                 .profileImage("https://sy.png")
+                .birthDate(LocalDate.of(2004, 1, 26))
+                .description("요정")
                 .build()
         );
 
@@ -80,6 +87,8 @@ class InfluencerControllerTest {
 
             assertThat(actual.getName()).isEqualTo(expected.getName());
             assertThat(actual.getProfileImage()).isEqualTo(expected.getProfileImage());
+            assertThat(actual.getBirthDate()).isEqualTo(expected.getBirthDate());
+            assertThat(actual.getDescription()).isEqualTo(expected.getDescription());
         }
     }
 }
