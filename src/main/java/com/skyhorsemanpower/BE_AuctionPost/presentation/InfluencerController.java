@@ -32,6 +32,7 @@ public class InfluencerController {
     private final InfluencerService influencerService;
 
     @PostMapping("/add")
+    @Operation(summary = "인플루언서 추가", description = "인플루언서 정보를 추가합니다.")
     public SuccessResponse<Object> addInfluencer(
         @RequestBody InfluencerAddRequestVo influencerAddRequestVo) {
         influencerService.addInfluencer(InfluencerAddRequestDto.voToDto(influencerAddRequestVo));
@@ -39,13 +40,15 @@ public class InfluencerController {
     }
 
     @GetMapping
+    @Operation(summary = "인플루언서 조회", description = "인플루언서 정보를 조회합니다.")
     public SuccessResponse<InfluencerDetailResponseVo> findInfluencer(
-        @RequestParam("influencerId") String influencerUuid) {
+        @RequestParam("influencerUuid") String influencerUuid) {
         return new SuccessResponse<>(
             InfluencerDetailResponseDto.dtoToVo(influencerService.findInfluencer(influencerUuid)));
     }
 
     @GetMapping("/search")
+    @Operation(summary = "인플루언서 검색", description = "인플루언서 이름으로 검색하여 리스트를 반환합니다.")
     public SuccessResponse<List<InfluencerSearchResponseVo>> searchInfluencer(
         @RequestParam("name") String name) {
         List<InfluencerSearchResponseDto> influencerSearchResponseDtos = influencerService.searchInfluencer(
@@ -59,6 +62,7 @@ public class InfluencerController {
     }
 
     @DeleteMapping("/delete")
+    @Operation(summary = "인플루언서 삭제", description = "인플루언서 정보를 삭제합니다.")
     public SuccessResponse<Object> deleteInfluencer(
         @RequestParam("influencerId") String influencerUuid) {
         influencerService.removeInfluencer(influencerUuid);
