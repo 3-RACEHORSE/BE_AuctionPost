@@ -130,6 +130,8 @@ public class InfluencerServiceImpl implements InfluencerService {
 				InfluencerSummaryDto.builder()
 					.name(influencer.getName())
 					.profileImage(influencer.getProfileImage())
+					.birthDate(influencer.getBirthDate())
+					.description(influencer.getDescription())
 					.build()
 			).toList();
 	}
