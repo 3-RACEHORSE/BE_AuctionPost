@@ -145,7 +145,8 @@ public class CustomReadAuctionPostRepositoryImpl implements CustomReadAuctionPos
     }
 
     @Override
-    public SearchAuctionPostTitleAndInfluencerNameResponseVo getAuctionPostTitleAndInfluencerName(SearchAuctionPostTitleDto searchAuctionPostTitleDto) {
+    public SearchAuctionPostTitleAndInfluencerNameResponseVo getAuctionPostTitleAndInfluencerName(
+            SearchAuctionPostTitleDto searchAuctionPostTitleDto) {
         log.info("SearchAuctionPostTitleDto >>> {}", searchAuctionPostTitleDto.toString());
 
         String searchData = searchAuctionPostTitleDto.getData();
