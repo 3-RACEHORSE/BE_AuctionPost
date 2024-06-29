@@ -135,4 +135,18 @@ public class InfluencerServiceImpl implements InfluencerService {
 					.build()
 			).toList();
 	}
+
+	@Override
+	public List<InfluencerDetailResponseDto> getAllInfluencers() {
+		List<Influencer> influencers = influencerRepository.findAll();
+        return influencers.stream()
+			.map(influencer -> InfluencerDetailResponseDto.builder()
+				.influencerUuid(influencer.getUuid())
+				.name(influencer.getName())
+				.profileImage(influencer.getProfileImage())
+				.birth(influencer.getBirthDate())
+				.description(influencer.getDescription())
+				.build())
+			.toList();
+	}
 }

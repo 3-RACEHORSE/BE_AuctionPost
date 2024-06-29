@@ -3,7 +3,9 @@ package com.skyhorsemanpower.BE_AuctionPost.application.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.skyhorsemanpower.BE_AuctionPost.GenerateRandom;
 import com.skyhorsemanpower.BE_AuctionPost.application.InfluencerService;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerDetailResponseDto;
 import com.skyhorsemanpower.BE_AuctionPost.data.dto.InfluencerSearchResponseDto;
@@ -130,5 +132,52 @@ public class InfluencerTest {
             assertThat(influencerSummaryDto.getDescription()).isEqualTo(
                 influencers.get(i).getDescription());
         }
+    }
+
+    @Test
+    @DisplayName("모든 인플루언서를 조회할때 1명 이상있으면 리스트에 담아 반환한다.")
+    void getAllInfluencersAtLeastOneTest() {
+        List<Influencer> influencers = List.of(
+            Influencer.builder()
+                .uuid(GenerateRandom.influencerUuid())
+                .name("아이유")
+                .profileImage("https://iu.png")
+                .birthDate(LocalDate.of(1993, 5, 16))
+                .description("국힙원탑")
+                .build(),
+            Influencer.builder()
+                .uuid(GenerateRandom.influencerUuid())
+                .name("장원영")
+                .profileImage("https://jwy.png")
+                .birthDate(LocalDate.of(2004, 8, 31))
+                .description("공주님")
+                .build()
+        );
+
+        Mockito.when(influencerRepository.findAll()).thenReturn(influencers);
+
+        List<InfluencerDetailResponseDto> influencerDetailResponseDtos = influencerService.getAllInfluencers();
+
+        assertThat(influencerDetailResponseDtos.size()).isEqualTo(influencers.size());
+        for (int i = 0; i < influencerDetailResponseDtos.size(); i++) {
+            assertThat(influencerDetailResponseDtos.get(i).getInfluencerUuid()).isEqualTo(influencers.get(i).getUuid());
+            assertThat(influencerDetailResponseDtos.get(i).getName()).isEqualTo(influencers.get(i).getName());
+            assertThat(influencerDetailResponseDtos.get(i).getProfileImage()).isEqualTo(
+                influencers.get(i).getProfileImage());
+            assertThat(influencerDetailResponseDtos.get(i).getBirth()).isEqualTo(influencers.get(i).getBirthDate());
+            assertThat(influencerDetailResponseDtos.get(i).getDescription()).isEqualTo(influencers.get(i).getDescription());
+        }
+    }
+
+    @Test
+    @DisplayName("모든 인플루언서를 조회할때 등록된 인플루언서가 없으면 빈 리스트를 반환한다.")
+    void getAllInfluencersEmptyListTest() {
+        List<Influencer> influencers = List.of();
+
+        Mockito.when(influencerRepository.findAll()).thenReturn(influencers);
+
+        List<InfluencerDetailResponseDto> influencerDetailResponseDtos = influencerService.getAllInfluencers();
+
+        assertTrue(influencerDetailResponseDtos.isEmpty());
     }
 }
