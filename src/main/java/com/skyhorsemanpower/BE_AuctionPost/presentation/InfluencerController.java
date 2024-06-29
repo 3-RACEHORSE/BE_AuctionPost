@@ -11,6 +11,7 @@ import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerAddRequestVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerDetailResponseVo;
 import com.skyhorsemanpower.BE_AuctionPost.data.vo.InfluencerSearchResponseVo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
+@Tag(name = "인플루언서 서비스", description = "인플루언서 API")
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/influencer")
 public class InfluencerController {
@@ -76,5 +78,11 @@ public class InfluencerController {
     ) {
         return new SuccessResponse<>(influencerService.getInfluencerSummaries(
             InfluencerSummariesRequestDto.queryParamToDto(influencerUuids)));
+    }
+
+    @GetMapping("/all")
+    @Operation(summary = "모든 인플루언서 조회", description = "등록된 모든 인플루언서를 조회해 리스트로 반환합니다.")
+    public SuccessResponse<List<InfluencerDetailResponseDto>> findAllInfluencers() {
+        return new SuccessResponse<>(influencerService.getAllInfluencers());
     }
 }
