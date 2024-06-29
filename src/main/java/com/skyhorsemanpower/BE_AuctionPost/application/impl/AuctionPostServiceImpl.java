@@ -136,12 +136,6 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                 searchAllAuctionDto, PageRequest.of(page, size)
         );
 
-        // 조회 없는 경우 예외 처리
-        if (readAuctionPostPage.isEmpty()) {
-            log.info("Search Auction result is Empty");
-            throw new CustomException(ResponseStatus.NO_DATA);
-        }
-
         List<ReadAuctionPost> auctionPosts = readAuctionPostPage.getContent();
 
         // Vo에 들어가는 데이터로 변환
@@ -253,12 +247,6 @@ public class AuctionPostServiceImpl implements AuctionPostService {
         Page<ReadAuctionPost> readAuctionPostPage = readAuctionPostRepository.findAllInfluencerAuctionPost(
                 influencerAllAuctionPostDto, PageRequest.of(page, size)
         );
-
-        // 조회 없는 경우 예외 처리
-        if (readAuctionPostPage.isEmpty()) {
-            log.info("Search Influencer Auction result is Empty");
-            throw new CustomException(ResponseStatus.NO_DATA);
-        }
 
         List<ReadAuctionPost> auctionPosts = readAuctionPostPage.getContent();
 
