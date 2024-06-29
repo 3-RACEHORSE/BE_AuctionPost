@@ -21,4 +21,6 @@ public interface InfluencerService {
 	List<InfluencerSearchResponseDto> searchInfluencer(String name);
 
 	List<InfluencerSummaryDto> getInfluencerSummaries(InfluencerSummariesRequestDto influencerSummariesRequestDto);
+
+	List<InfluencerDetailResponseDto> getAllInfluencers();
 }
