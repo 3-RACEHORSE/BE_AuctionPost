@@ -18,12 +18,13 @@ public class InitialAuctionDto {
     private long auctionEndTime;
     private BigDecimal incrementUnit;
     private String influencerUuid;
+    private String influencerName;
 
     @Builder
     public InitialAuctionDto(String auctionUuid, BigDecimal startPrice,
         int numberOfEventParticipants,
         long auctionStartTime, long auctionEndTime, BigDecimal incrementUnit,
-        String influencerUuid
+        String influencerUuid, String influencerName
     ) {
         this.auctionUuid = auctionUuid;
         this.startPrice = startPrice;
@@ -32,5 +33,6 @@ public class InitialAuctionDto {
         this.auctionEndTime = auctionEndTime;
         this.incrementUnit = incrementUnit;
         this.influencerUuid = influencerUuid;
+        this.influencerName = influencerName;
     }
 }

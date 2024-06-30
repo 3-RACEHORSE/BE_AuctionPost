@@ -99,6 +99,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                         .toEpochMilli())
                 .incrementUnit(createAuctionPostDto.getIncrementUnit())
                 .influencerUuid(createAuctionPostDto.getInfluencerUuid())
+                .influencerName(createAuctionPostDto.getInfluencerName())
                 .build();
 
         producer.sendMessage(Topics.Constant.INITIAL_AUCTION, initialAuctionDto);
