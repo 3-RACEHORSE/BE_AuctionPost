@@ -98,6 +98,7 @@ public class AuctionPostServiceImpl implements AuctionPostService {
                         .plus(Duration.ofHours(AuctionEndTimeState.TWO_HOUR.getEndTime()))
                         .toEpochMilli())
                 .incrementUnit(createAuctionPostDto.getIncrementUnit())
+                .influencerUuid(createAuctionPostDto.getInfluencerUuid())
                 .build();
 
         producer.sendMessage(Topics.Constant.INITIAL_AUCTION, initialAuctionDto);
