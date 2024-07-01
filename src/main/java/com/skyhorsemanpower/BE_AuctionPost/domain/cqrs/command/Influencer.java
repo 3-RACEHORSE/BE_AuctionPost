@@ -24,13 +24,13 @@ public class Influencer {
     private String uuid;
     @Column(name = "name", nullable = false, length = 40)
     private String name;
-    @Column(name = "profile_image", nullable = false, length = 500)
+    @Column(name = "profile_image", nullable = false, length = 1000)
     private String profileImage;
     @Column(name = "phone_num", nullable = false, length = 20)
     private String phoneNum;
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
-    @Column(name = "description")
+    @Column(name = "description", length = 1000)
     private String description;
 
     @Builder
